@@ -1,0 +1,23 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='flex-dcc fz18' wx:if="{{pbt&&list.length==0}}">
+        <image src='../../image/im_lanya.png' style='width:576rpx;' mode='widthFix' class='mt50 mb20'></image>
+        请打开您的蓝牙连接设备
+    </view>
+    <view class='flex-dcc fz18' wx:if="{{serchDes&&list.length==0}}">
+        <image src='../../image/im_shebei.png' style='width:576rpx;' mode='widthFix' class='mt50 mb20'></image>
+        正在为您搜索设备中，请稍等
+    </view>
+    <view wx:if="{{list.length>0}}">
+        <view class='fz16 m15 bold'>已搜到</view>
+        <view class='mlr_15 cgf br6 bs plr_15'>
+            <view class='ptb_12 bt_e5 relative flex-csb' wx:for="{{list}}" wx:key="index" bindtap='clickItem' data-index="{{index}}">
+                {{item.name}}
+                <view class='radio' wx:if="{{!item.active}}"></view>
+                <image src="../../image/ic_gouxuan.png" style='width:38rpx;height:38rpx;' wx:if="{{item.active}}"></image>
+            </view>
+        </view>
+        <view class='button mt50' bindtap='connect'>连接</view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent"/>

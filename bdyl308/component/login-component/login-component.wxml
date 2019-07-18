@@ -1,0 +1,15 @@
+<view class='wrap' wx-if="{{is_show}}">
+    <view class='contents' style='background-color:#fff;'>
+        <view class='plr50 mt100'>
+            <view class='border-r1 bw'>
+                <view class='plr24 ptb30 font14'>
+                    <view style='margin-bottom:40rpx;'>小程序将获得以下授权:</view>
+                    <view class='col9'>获得您的公开信息（昵称、头像等）</view>
+                </view>
+                <view class='ptb30'>
+                    <button open-type="getUserInfo" bindgetuserinfo="bindGetUserInfo" style='width: 86%;height: 96rpx;background-color: #486cff;border-radius: 10rpx;color: #fff;margin: 0 auto;line-height: 96rpx;text-align: center;font-size: 32rpx;' class='button'>授权登录</button>
+                </view>
+            </view>
+        </view>
+    </view>
+</view>

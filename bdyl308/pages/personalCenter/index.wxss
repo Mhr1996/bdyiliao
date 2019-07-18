@@ -1,0 +1,31 @@
+/**index.wxss**/
+page{
+    background-color: #f9f9f9
+}
+.item view{
+	width: 125rpx;
+	height: 66rpx;
+	border-radius: 10rpx;
+	text-align:center;
+	line-height: 66rpx;
+	border: solid 1px #999999;
+}
+.item view.active{
+	background-color: #486cff;
+	border-radius: 10rpx;
+	color:#fff;
+	border: solid 1px #fff;
+}
+.mode view{
+	padding:16rpx 36rpx;
+	border: solid 1px #999999;
+	text-align:center;
+	border-radius: 10rpx;
+	margin-bottom:12px;
+}
+.mode view.active{
+	background-color: #486cff;
+	border-radius: 10rpx;
+	color:#fff;
+	border: solid 1px #fff;
+}

@@ -1,0 +1,10 @@
+<!--index.wxml-->
+<view class="p15">
+    <block wx:for="{{ad_list}}" wx:key="index">
+        <view class="w100 mb15">
+            <image src="{{item.image}}" class="w100 br6" style="height:300rpx"></image>
+        </view>
+    </block>
+</view>
+
+<login-component bind:myevent="listeningEvent" />

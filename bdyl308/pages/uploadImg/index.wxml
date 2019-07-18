@@ -1,0 +1,15 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='mlr_15 p15 cgf bs br6 mt15'>
+        <view class='bold fz16 after relative pl15'>{{info[index].title}}</view>
+        <view class='c9 ptb_15'>{{info[index].details}}</view>
+        <view class='flex-dc'>
+            <image src="{{dlcurl+'/public'+item}}" class='mr10' style='width:200rpx;height:200rpx' wx:for="{{lispic}}"
+                wx:key="index"></image>
+            <image src="../../image/ic_pz.png" style='width:200rpx;height:200rpx' bindtap="uploadPic">
+            </image>
+        </view>
+    </view>
+    <view class='button mt50' bindtap="next" wx:if="{{index<1}}">下一步</view>
+    <view class='button mt50' bindtap="submit" wx:if="{{index==1}}">上传图片</view>
+</view>

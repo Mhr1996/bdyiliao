@@ -1,0 +1,19 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='m15 cm fz12'>
+        清晰、完整的照片才能让我们的后台的专家准确判断您的病情，请在白天光线充足的情况下，由您的朋友或家人按照以下的示意图以及要求拍照。
+    </view>
+    <view class='mlr_15 p15 cgf bs br6'>
+        <view class='bold fz16 after relative pl15'>{{info[index].title}}</view>
+        <view class='c9 ptb_15'>{{info[index].details}}</view>
+        <view class='flex-dc'>
+            <image src="{{dlcurl+'/public'+item}}" class='mr10' style='width:200rpx;height:200rpx' wx:for="{{lispic}}"
+                wx:key="index"></image>
+            <image src="../../image/ic_pz.png" style='width:200rpx;height:200rpx' bindtap="uploadPic">
+            </image>
+        </view>
+    </view>
+    <view class='button mt50' bindtap="next" wx:if="{{index<3}}">下一步</view>
+    <view class='button mt50' bindtap="submit" wx:if="{{index==3}}">上传图片</view>
+</view>
+<login-component bind:myevent="listeningEvent" />

@@ -1,0 +1,53 @@
+<!--index.wxml-->
+<view class="vh100 p15">
+    <view class="cgf mb15 plr_15 flex-dcc br6 bs">
+        <view class="flex-csb bb_e5 w100 ptb_10">
+            <view>开始时间</view>
+            <view>{{bluetooth.startTime}}</view>
+        </view>
+        <view class="flex-csb bb_e5 w100 ptb_10">
+            <view>结束时间</view>
+            <view>{{bluetooth.endTime}}</view>
+        </view>
+        <view class="flex-csb bb_e5 w100 ptb_10">
+            <view>光疗时长</view>
+            <view>{{bluetooth.treatTime}}min</view>
+        </view>
+        <view class="flex-csb w100 ptb_10 mb10">
+            <view class="fz12 c6">(建议每隔两天使用一次)</view>
+            <button
+                style='width:192rpx;height:62rpx;color:#486cff;border:solid 1px #486cff;line-height:62rpx;background-color:#fff;float:right;margin:0'
+                bindtap="toUpload" wx:if="{{no_upload===0}}">上传图片</button>
+        </view>
+        <view class='flex-csb w100' wx:if="{{total_lispic.length>0}}">
+            <view class='flex-dcc' style='width:148rpx;'>
+                <image src="{{dlcurl+'/public'+total_lispic[0]}}" style='width:100%;height:190rpx'></image>
+                <view class='c6 fz12 mt5'>顶视图</view>
+            </view>
+            <view class='flex-dcc' style='width:148rpx;'>
+                <image src="{{dlcurl+'/public'+total_lispic[1]}}" style='width:100%;height:190rpx'>
+                </image>
+                <view class='c6 fz12 mt5'>发际线</view>
+            </view>
+            <view class='flex-dcc' style='width:148rpx;'>
+                <image src="{{dlcurl+'/public'+total_lispic[2]}}" style='width:100%;height:190rpx'></image>
+                <view class='c6 fz12 mt5'>后视图</view>
+            </view>
+            <view class='flex-dcc' style='width:148rpx;'>
+                <image src="{{dlcurl+'/public'+total_lispic[3]}}" style='width:100%;height:190rpx'>
+                </image>
+                <view class='c6 fz12 mt5'>局部图</view>
+            </view>
+        </view>
+        <navigator url="/pages/followUp/index?total_lispic={{total_lispic_str}}" hover-class="none" class='w100'
+            wx:if="{{total_lispic.length>0}}">
+            <view class='cm mtb_10 tl w100'>我要随诊</view>
+        </navigator>
+    </view>
+    <view class="cgf mtb_15 br6 bs" wx:if="{{selected_day_list.length>0 || selected_day_list2.length>0}}">
+        <view class="mlr_15 pt15 fz18">本月光疗记录：{{selected_day_list.length+selected_day_list2.length}}次</view>
+        <calendar calendar="{{calendar}}" gesture="{{gesture}}" class="calendar"></calendar>
+    </view>
+    <view class='button mt50 mb20' bindtap='submit'>保存</view>
+</view>
+<login-component bind:myevent="listeningEvent" />

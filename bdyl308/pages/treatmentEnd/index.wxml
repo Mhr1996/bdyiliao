@@ -1,0 +1,82 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view class="p15">
+        <view class="cgf mb15 br4 pt15 bs flex-css plr_15">
+            <navigator url="/pages/treatmentEnd/index">
+                <view class="c3 pl15 relative after mb10 fz16">本次光疗信息</view>
+                <view class='flex-csb w100 mb10'>
+                    <view>照射时间：{{bluetooth.treatTime ?bluetooth.treatTime+'s' : beam_time}}</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>辐照剂量：{{bluetooth.treatTime?bluetooth.treatTime*30+'mJ' : dose}}</view>
+                </view>
+                <view class='flex w100 mb10 ac'>
+                    开始时间：{{bluetooth.startTime || start_time}}
+                </view>
+            </navigator>
+        </view>
+        <view class="cgf mb15 br4 bs pt15 plr_15">
+            <view class="cm fz12 pb15" wx:if="{{from!='share' && need_submit === 1}}">请完善信息，以便后期观察
+            </view>
+            <view class="flex-csb pb15 bb_e5">
+                <view>部位</view>
+                <picker bindchange="bindPickerChange1" range="{{part_list}}" class="flex1 right" range-key="name"
+                    disabled="{{from=='share' || has_part?true:false}}">
+                    <view style="color:{{part_name?'':'#999'}}">
+                        {{part_name?part_name:'请选择'}}
+                        <image src="../../image/right.png" style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;"
+                            class="ml15" wx:if="{{from!='share' && !has_part}}"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="flex-csb ptb_15 bb_e5" wx:if="{{show_else_part}}">
+                <view class="flex-none">其他部位</view>
+                <view class="fg1" style="text-align: right">
+                    <input class="w100" value="{{else_basic}}" type="text" placeholder="请输入部位"
+                        placeholder-style="color:#999" disabled="{{has_part?true:false}}" bindinput="checkValue" />
+                </view>
+            </view>
+            <!-- <view class="ptb_15">
+                <view>患处照片</view>
+            </view> -->
+            <view class="flex-csb w100 ptb_15">
+                <view>患处照片</view>
+                <button
+                    style='width:192rpx;height:62rpx;color:#486cff;border:solid 1px #486cff;line-height:62rpx;background-color:#fff;float:right;margin:0'
+                    bindtap="toUpload" wx:if="{{from!='share' && has_pic === 0}}">上传图片</button>
+            </view>
+            <view class="cm pb15 fz12"> (建议上传光疗结束及出现红斑时的图片，以便后期对比) </view>
+            <view class="bb_e5 flex-dc pb15" wx:if="{{end_img || img}}">
+                <view class="flex-dcc mr20" style="position:relative" wx:if="{{!!end_img}}">
+                    <image src="../../image/ic_sc.png"
+                        style="width: 45rpx;height: 45rpx;position:absolute;top:-10rpx;right:-10rpx;z-index:2"
+                        wx:if="{{from!='share' && has_pic === 0}}" bindtap="removeImg" data-type="1"></image>
+                    <image src="{{dlcurl+'/public'+end_img}}" style="width: 160rpx;height: 160rpx;"></image>
+                    <view class="c6 fz12 pt10">光疗结束</view>
+                </view>
+                <view class="flex-dcc" style="position:relative" wx:if="{{!!img}}">
+                    <image src="../../image/ic_sc.png"
+                        style="width: 45rpx;height: 45rpx;position:absolute;top:-10rpx;right:-10rpx;z-index:2"
+                        wx:if="{{from!='share' && has_pic === 0}}" bindtap="removeImg" data-type="2"></image>
+                    <image src="{{dlcurl+'/public'+img}}" style="width: 160rpx;height: 160rpx;"></image>
+                    <view class="c6 fz12 pt10">红斑情况</view>
+                </view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>红斑持续时间</view>
+                <picker bindchange="bindPickerChange2" range="{{lasttime_list}}" class="flex1 right"
+                    range-key="last_time" disabled="{{from=='share' || has_last_time?true:false}}">
+                    <view style="color:{{last_time?'':'#999'}}">
+                        {{last_time?last_time:'请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"
+                            wx:if="{{from!='share' && !has_last_time}}"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="pb15 cm ptb_15 fz12">(光疗后从红斑出现到红斑消退的时间，称为红斑持续时间) </view>
+        </view>
+        <view class='button mt50 mb20' bindtap='submit' wx:if="{{from!='share' && need_submit === 1}}">保存
+        </view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

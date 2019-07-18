@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<view class="vh100 p20">
+    <input type='text' class='w100 cgf p10 mb30' placeholder='请输入' value="{{costName}}" bindinput='setVal' data-name="costName"></input>
+    <button bindtap='hi' class='button'>点击</button>
+</view>
+<login-component bind:myevent="listeningEvent"/>

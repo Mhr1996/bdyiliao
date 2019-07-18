@@ -1,0 +1,31 @@
+<!--index.wxml-->
+<view class="vh100">
+	<view wx:if="{{has_pic === 1}}">
+		<view class="flex-csa plr_15 mt20 mb20">
+			<view>
+				<image src="{{dlcurl+'/public'+pic.top_img}}" style="width: 310rpx; height: 340rpx;"></image>
+				<view class="center c6 mt5">顶视图</view>
+			</view>
+			<view>
+				<image src="{{dlcurl+'/public'+pic.hairline_img}}" style="width: 310rpx; height: 340rpx;"></image>
+				<view class="center c6 mt5">发际线</view>
+			</view>
+		</view>
+		<view class="flex-csa plr_15 mb50">
+			<view>
+				<image src="{{dlcurl+'/public'+pic.after_img}}" style="width: 310rpx; height: 340rpx;"></image>
+				<view class="center c6 mt5">后视图</view>
+			</view>
+			<view>
+				<image src="{{dlcurl+'/public'+pic.local_img}}" style="width: 310rpx; height: 340rpx;"></image>
+				<view class="center c6 mt5">局部图</view>
+			</view>
+		</view>
+	</view>
+	<view wx:if="{{has_pic === 0}}" class="w100 ta-center ptb20 c6">暂未上传首诊图片</view>
+	<navigator url="/pages/uploadImg/index?type=1" hover-class="none" class="w100 fixed flex-center mtb20"
+		style="left:0;bottom:0" wx:if="{{from!='share' && has_pic === 0}}">
+		<view class="button mlr15">上传图片</view>
+	</navigator>
+</view>
+<login-component bind:myevent="listeningEvent" />

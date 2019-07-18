@@ -1,0 +1,6 @@
+<!--index.wxml-->
+<import src="../wxParse/wxParse.wxml" />
+<view class="vh100 p15" style="overflow: scroll;">
+     <template is="wxParse" data="{{wxParseData:info.nodes}}" />
+</view>
+<login-component bind:myevent="listeningEvent" />

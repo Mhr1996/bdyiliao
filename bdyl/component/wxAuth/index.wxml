@@ -1,0 +1,15 @@
+<template name="wxAuth">
+	<view class="mask flex-dcc jc-center" animation="{{animationData}}" wx:if="{{show_mask}}">
+		<view class="w80 bg-ff br5" style="box-shadow:0 0 8px rgba(0,0,0,.2)" animation="{{animationData}}">
+			<view class="w100 ptb15">
+				<view class="w100 f17 c0 fw-bold ta-center">提示</view>
+				<view class="w100 f16 c0 ptb25 ta-center">小程序申请微信授权登录</view>
+			</view>
+			<view class="w100 flex-csb">
+				<view class="flex1 ptb12 f15 c9 bg-f5 ta-center br5-b-l" bindtap="hideAuth">取消</view>
+				<button open-type="getUserInfo" hover-class="none"
+					class="flex1 ptb12 f15 cf bg-diy ta-center br0 br5-b-r" bindgetuserinfo="wxAuth">允许</button>
+			</view>
+		</view>
+	</view>
+</template>

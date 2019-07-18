@@ -1,0 +1,31 @@
+/**app.wxss**/
+@import "./style/base.wxss";
+
+/*checkbox 选项框大小  */
+checkbox .wx-checkbox-input,
+radio .wx-radio-input {
+    width: 32rpx;
+    height: 32rpx;
+    border-radius: 50%;
+}
+
+/*checkbox选中后样式  */
+checkbox .wx-checkbox-input.wx-checkbox-input-checked,
+radio .wx-radio-input.wx-radio-input-checked {
+    background: #486cff;
+    border: 1px solid #486cff;
+}
+
+/*checkbox选中后图标样式  */
+checkbox .wx-checkbox-input.wx-checkbox-input-checked::before,
+radio .wx-radio-input.wx-radio-input-checked::before {
+    width: 32rpx;
+    height: 32rpx;
+    line-height: 32rpx;
+    text-align: center;
+    font-size: 25rpx;
+    color: #fff;
+    background: transparent;
+    transform: translate(-50%, -50%) scale(1);
+    -webkit-transform: translate(-50%, -50%) scale(1);
+}

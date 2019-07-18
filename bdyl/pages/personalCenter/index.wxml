@@ -1,0 +1,95 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view class="flex-dcc relative zi_1 mlr_15 cgf br4 plr_15 mt15" wx:if="{{!to_share}}">
+        <view class="w100 flex-dc ptb_10 relative bb_e5" wx:if="{{from!='share' || has_first_visit}}"
+            bindtap="goFirstVisit">
+            <image src='../../image/ic_scwz.png' mode='widthFix' style='width:52rpx;' class='mr15'></image>
+            首次问诊
+            <image src="../../image/right.png" class="ml15 rJ-a " style='margin-bottom:-15rpx;'></image>
+        </view>
+        <view class="w100 flex-dcc ptb_10 relative bb_e5" wx:if="{{from!='share' || has_follow_visit}}">
+            <view class="flex-dc w100" bindtap="showList">
+                <image src="../../image/ic_szjl.png" mode='widthFix' style='width:52rpx;' class='mr15'></image>
+                随诊记录
+                <image src="../../image/right.png" class="ml15 rJ-a"
+                    style='bottom:0;top:15px;{{show_list?"transform:rotate(90deg)":""}}'></image>
+            </view>
+            <view wx:if="{{show_list}}" class='fz13 w100'>
+                <block wx:for="{{list}}" wx:key="index">
+                    <view class='pb10 c9 w100' style='padding-left:88rpx;' data-treatment_id="{{item.treatment_id}}"
+                        bindtap="showCalendar">{{item.timestamp2}}记录</view>
+                    <calendar calendar="{{calendar}}" gesture="{{gesture}}"
+                        style="border-top-right-radius:10px;border-top-left-radius:10px;"
+                        wx:if="{{item.show_calendar}}"></calendar>
+                </block>
+            </view>
+        </view>
+        <view class="w100 flex-dc ptb_10 relative" wx:if="{{from!='share' || has_first_pic}}" bindtap="goFirstPic">
+            <image src='../../image/ic_sztp.png' mode='widthFix' style='width:52rpx;' class='mr15'></image>
+            首诊图片
+            <image src="../../image/right.png" class="ml15 rJ-a " style='margin-bottom:-15rpx;'>
+            </image>
+        </view>
+    </view>
+
+    <view class="flex-dcc relative zi_1 mlr_15 cgf br4 plr_15 mt15 bs" wx:if="{{to_share}}">
+        <checkbox-group bindchange="checkboxChange" class="w100">
+            <label class="checkbox w100 flex-dc ptb_10 relative bt_e5">
+                <checkbox value="first_visit" />
+                <image src='../../image/ic_scwz.png' mode='widthFix' style='width:52rpx;' class='mr15'></image>
+                首次问诊
+                <image src="../../image/right.png" class="ml15 rJ-a " style='margin-bottom:-15rpx;'></image>
+            </label>
+            <view class="w100 flex-dcc ptb_10 relative bt_e5">
+                <label class="flex-dc w100">
+                    <checkbox value="follow_visit" checked="{{follow_visit_checked}}" />
+                    <image src="../../image/ic_szjl.png" mode='widthFix' style='width:52rpx;' class='mr15'></image>
+                    随诊记录
+                    <image src="../../image/right.png" class="ml15 rJ-a "
+                        style='bottom:0;top:15px;{{show_list?"transform:rotate(90deg)":""}}' catchtap="showList">
+                    </image>
+                </label>
+                <view wx:if="{{show_list}}" class='fz13 w100'>
+                    <checkbox-group bindchange="checkboxChange2">
+                        <label class="flex-dc checkbox ptb_15" wx:for="{{list}}" wx:key="index">
+                            <checkbox value="{{item.treatment_id}}" checked="{{item.checked}}" />
+                            <view class='c9' style='padding-left:88rpx;'>{{item.timestamp2}}记录</view>
+                        </label>
+                    </checkbox-group>
+                </view>
+            </view>
+            <label class="checkbox w100 flex-dc ptb_10 relative bt_e5">
+                <checkbox value="first_pic" />
+                <image src='../../image/ic_sztp.png' mode='widthFix' style='width:52rpx;' class='mr15'></image>
+                首诊图片
+                <image src="../../image/right.png" class="ml15 rJ-a " style='margin-bottom:-15rpx;'></image>
+            </label>
+        </checkbox-group>
+    </view>
+    <image src="../../image/ic_yd.png" class="fixed" mode="widthFix"
+        style="right:30rpx;bottom: 300rpx;width:135rpx;z-index:2;" bindtap='toShare'
+        wx:if="{{from!='share' && !to_share}}"></image>
+    <view class="w100 fixed flex"
+        style="background-color:#f9f9f9;left:0;bottom:0;z-index:2;padding:30rpx 0;align-items: center;justify-content: center"
+        wx:if="{{to_share}}">
+        <button hover-class="none" bindtap="showShare">
+            <image src="../../image/wx.png" mode="widthFix" style="width:120rpx;">
+            </image>
+        </button>
+    </view>
+    <view class="mask flex-dcc2 jc-center" animation="{{animationData}}" wx:if="{{show_mask}}" catchtap="toggleMask">
+        <view class="w80 bg-ff br5" style="box-shadow:0 0 8px rgba(0,0,0,.2)" animation="{{animationData}}">
+            <view class="w100 ptb15">
+                <view class="w100 f17 c0 fw-bold ta-center">提示</view>
+                <view class="w100 f16 c0 ptb25 ta-center">确定分享选中的记录？</view>
+            </view>
+            <view class="w100 flex-csb">
+                <view class="flex1 ptb12 f15 c9 bg-f5 ta-center br5-b-l" catchtap="toggleMask">取消</view>
+                <button hover-class="none" class="flex1 ptb12 f15 cf bg-diy ta-center br0 br5-b-r"
+                    catchtap='onShareAppMessage' open-type="share">确定</button>
+            </view>
+        </view>
+    </view>
+    <image src="../../image/bg.png" class="fixed zi" mode="widthFix" style="left:0;bottom: 0;width:100%"></image>
+</view>
+<login-component bind:myevent="listeningEvent" />

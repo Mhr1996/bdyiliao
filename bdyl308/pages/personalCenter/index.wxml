@@ -1,0 +1,138 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class="p15" wx:if="{{add===1}}">
+        <view class="cgf br4 bs plr_15">
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>姓名</view><input type="text" data-name="name" bindinput='inputVal' placeholder="请输入姓名"
+                    style="text-align: right;"></input>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>手机</view><input type="text" maxlength="11" data-name="mobile" bindinput='inputVal'
+                    placeholder="请输入手机号码" style="text-align: right;"></input>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>性别</view>
+                <picker bindchange="bindPickerChange" value="{{index}}" range="{{sex}}" bindchange="setVal"
+                    data-name="sex" class="flex1 right">
+                    <view class="picker">
+                        {{sex[index]}}
+                    </view>
+                    <view style="color:{{!sexVal?'#777':''}}">
+                        {{sexVal ||'请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>用户类型</view>
+                <picker mode="selector" bindchange="bindPickerChange" value="{{index}}" range="{{user}}"
+                    bindchange="setVal" data-name="user" class="flex1 right" range-key="name">
+                    <view style="color:{{!userVal.name?'#777':''}}">
+                        {{userVal.name || '请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>症状</view>
+                <picker bindchange="bindPickerChange" value="{{index}}" range="{{symptom}}" bindchange="setVal"
+                    data-name="symptom" class="flex1 right" mode="selector" range-key="name">
+                    <view style="color:{{!symptomVal.name?'#777':''}}">
+                        {{symptomVal.name || '请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="pt10">
+                <view class="after relative pl10 mb15">部位</view>
+                <view class="item flex-csa wrap mb10" style="justify-content:flex-start;">
+                    <view bindtap="position" class="mlr_5 mb10 {{item.active?'active': ''}}" wx:for="{{title}}"
+                        wx:key="index" data-index="{{index}}" style='margin-left:17rpx;margin-right:17rpx;'>
+                        {{item.name}}</view>
+                </view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>发现时间</view>
+                <picker bindchange="bindPickerChange" value="{{index}}" range="{{time}}" bindchange="setVal"
+                    data-name="time" class="flex1 right" mode="selector" range-key="name">
+                    <view style="color:{{!timeVal.name?'#777':''}}">
+                        {{timeVal.name || '请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="flex-csb bb_e5 ptb_10">
+                <view>是否对紫外线过敏</view>
+                <picker bindchange="bindPickerChange" value="{{index}}" range="{{is}}" bindchange="setVal"
+                    data-name="is" class="flex1 right">
+                    <view class="picker">
+                        {{is[index]}}
+                    </view>
+                    <view style="color:{{!isVal?'#777':''}}">
+                        {{isVal || '请选择'}}<image src="../../image/right.png"
+                            style="width: 14rpx;height: 24rpx; margin-bottom: -2rpx;" class="ml15"></image>
+                    </view>
+                </picker>
+            </view>
+            <view class="bb_e5 ptb_10">
+                <view class="mb10">曾经光疗方式</view>
+                <view class="mode flex-csa">
+                    <view bindtap="position2" wx:for="{{title2}}" class=" {{item.active?'active': ''}}" wx:key="index"
+                        data-index="{{index}}">{{item.name}}</view>
+                </view>
+            </view>
+            <view class=" bb_e5 ptb_10">
+                <view class="mb10">曾用药记录</view>
+                <textarea placeholder="请输入您曾经的用药记录" class="cgf9 w100 p10 box" data-name="record"
+                    bindinput='inputVal'></textarea>
+            </view>
+        </view>
+        <view class='button mt20' bindtap="submit">确定</view>
+    </view>
+    <view wx:if="{{add===0}}" class="p15">
+        <view class="cgf br4 bs plr_15">
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>姓名</view>
+                <view>{{getUserD.name}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>手机</view>
+                <view>{{getUserD.mobile}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>性别</view>
+                <view>{{getUserD.six}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>用户类型</view>
+                <view>{{getUserD.basic_uid}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>症状</view>
+                <view>{{getUserD.basic_zid}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>部位</view>
+                <view>{{getUserD.basic_bid}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>发现时间</view>
+                <view>{{getUserD.basic_fid}}</view>
+            </view>
+            <view class="flex-csb bb_e5 ptb_15">
+                <view>是否对紫外线过敏</view>
+                <view>{{getUserD.is_allergy}}</view>
+            </view>
+            <view class="bb_e5 ptb_15">
+                <view class="mb10">曾经光疗方式</view>
+                <view>{{getUserD.basic_mode}}</view>
+            </view>
+            <view class=" bb_e5 ptb_15">
+                <view class="mb10">曾用药记录</view>
+                <view>{{getUserD.record}}</view>
+            </view>
+        </view>
+        <view class='button mt20' bindtap="submit" wx:if="{{add}}">确定</view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

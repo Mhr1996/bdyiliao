@@ -1,0 +1,114 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='cm p15' wx:if="{{is_empty===0}}">点击任意图片进入放大对比</view>
+    <view wx:if="{{!to_share && is_empty===0}}">
+        <block wx:for="{{list}}" wx:key="index">
+            <view class="mlr_15 br6 cgf bs p15 mb15">
+                <view class="flex-csb">
+                    <view class="c3 pl15 relative after mb10">{{item.ctime}}</view>
+                </view>
+                <view class='flex-csb'>
+                    <view class='flex-dcc' style='width:148rpx;'>
+                        <image src="{{dlcurl+'/public'+item.top_img}}" style='width:160rpx;height:160rpx;'
+                            bindtap="picView" data-index="{{index}}" data-no="0">
+                        </image>
+                        <view class='c6 fz12 mt5'>顶视图</view>
+                    </view>
+                    <view class='flex-dcc' style='width:148rpx;'>
+                        <image src="{{dlcurl+'/public'+item.hairline_img}}" style='width:160rpx;height:160rpx;'
+                            bindtap="picView" data-index="{{index}}" data-no="1">
+                        </image>
+                        <view class='c6 fz12 mt5'>发际线</view>
+                    </view>
+                    <view class='flex-dcc' style='width:148rpx;'>
+                        <image src="{{dlcurl+'/public'+item.after_img}}" style='width:160rpx;height:160rpx;'
+                            bindtap="picView" data-index="{{index}}" data-no="2">
+                        </image>
+                        <view class='c6 fz12 mt5'>后视图</view>
+                    </view>
+                    <view class='flex-dcc' style='width:148rpx;'>
+                        <image src="{{dlcurl+'/public'+item.local_img}}" style='width:160rpx;height:160rpx;'
+                            bindtap="picView" data-index="{{index}}" data-no="3">
+                        </image>
+                        <view class='c6 fz12 mt5'>局部图</view>
+                    </view>
+                </view>
+            </view>
+        </block>
+    </view>
+    <view wx:if="{{is_empty===1}}" class="noMore">
+        暂未上传照片
+    </view>
+    <checkbox-group bindchange="checkboxChange" class="plr_15" wx:if="{{to_share && is_empty===0}}"
+        style="padding-bottom:230rpx">
+        <label class='checkbox flex-dcc br6 cgf bs p15 mb15' wx:for="{{list}}" wx:key="index">
+            <view class="w100 flex-csb">
+                <view class="c3 pl15 relative after mb10">{{item.ctime}}</view>
+                <checkbox value="{{item.treatment_id}}" class='pb10 plb_10 box' />
+            </view>
+            <view class='w100 flex-csb'>
+                <view class='flex-dcc' style='width:148rpx;'>
+                    <image src="{{dlcurl+'/public'+item.top_img}}" style='width:160rpx;height:160rpx;'>
+                    </image>
+                    <view class='c6 fz12 mt5'>顶视图</view>
+                </view>
+                <view class='flex-dcc' style='width:148rpx;'>
+                    <image src="{{dlcurl+'/public'+item.hairline_img}}" style='width:160rpx;height:160rpx;'></image>
+                    <view class='c6 fz12 mt5'>发际线</view>
+                </view>
+                <view class='flex-dcc' style='width:148rpx;'>
+                    <image src="{{dlcurl+'/public'+item.after_img}}" style='width:160rpx;height:160rpx;'>
+                    </image>
+                    <view class='c6 fz12 mt5'>后视图</view>
+                </view>
+                <view class='flex-dcc' style='width:148rpx;'>
+                    <image src="{{dlcurl+'/public'+item.local_img}}" style='width:160rpx;height:160rpx;'>
+                    </image>
+                    <view class='c6 fz12 mt5'>局部图</view>
+                </view>
+            </view>
+        </label>
+    </checkbox-group>
+    <image src="../../image/ic_yd.png" class="fixed share" mode="widthFix" bindtap='toShare'
+        wx:if="{{from!='share' && !to_share && is_empty===0}}"></image>
+
+    <view class="w100 fixed flex"
+        style="background-color:#f9f9f9;left:0;bottom:0;z-index:2;padding:30rpx 0;align-items: center;justify-content: center">
+        <button hover-class="none" wx:if="{{to_share}}" bindtap="showShare">
+            <image src="../../image/wx.png" mode="widthFix" style="width:120rpx;">
+            </image>
+        </button>
+    </view>
+
+    <view class="mask flex-dcc2 jc-center" animation="{{animationData}}" wx:if="{{show_mask}}" catchtap="toggleMask">
+        <view class="w80 bg-ff br5" style="box-shadow:0 0 8px rgba(0,0,0,.2)" animation="{{animationData}}">
+            <view class="w100 ptb15">
+                <view class="w100 f17 c0 fw-bold ta-center">提示</view>
+                <view class="w100 f16 c0 ptb25 ta-center">确定分享选中的记录？</view>
+            </view>
+            <view class="w100 flex-csb">
+                <view class="flex1 ptb12 f15 c9 bg-f5 ta-center br5-b-l" catchtap="toggleMask">取消</view>
+                <button hover-class="none" class="flex1 ptb12 f15 cf bg-diy ta-center br0 br5-b-r"
+                    catchtap='onShareAppMessage' open-type="share">确定</button>
+            </view>
+        </view>
+    </view>
+
+    <view class="photo" wx:if="{{picView}}" bindtap="picView">
+        <view class="box"></view>
+        <swiper indicator-dots="{{indicatorDots}}" autoplay="{{autoplay}}" interval="{{interval}}"
+            duration="{{duration}}" circular="{{true}}" style="height:100%;width: 100%;height:100vh;"
+            previous-margin="0px" current="{{picIndex}}">
+            <block wx:for="{{list_total}}" wx:key="index">
+                <swiper-item class="flex-dcc" style="width:100%;height:100vh;justify-content:center">
+                    <image src="{{dlcurl+'/public'+item.img}}" class="slide-image w100 db"
+                        style="width: 100%;height:700rpx" />
+                    <view class="absolute" style="bottom: 0; right: 0;color: #FFF;margin-right: 10px;">
+                        {{item.ctime}}
+                    </view>
+                </swiper-item>
+            </block>
+        </swiper>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

@@ -1,0 +1,82 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view wx:if="{{!to_share && gl_list.length > 0}}">
+        <view class="flex-dcc relative zi_1 mlr_15 cgf br4 plr_15 mt15 bs">
+            <view class="w100 flex-dc fw">
+                <block wx:for="{{gl_list}}" wx:key="index">
+                    <view class="w100 flex-csb ptb_12 relative bt_e5" bindtap='showCalendar'
+                        style="{{index==0?'border-top:0':''}}" data-timestamp="{{item.timestamp}}">
+                        <view class="flex-dc">
+                            {{item.timestamp2}}
+                        </view>
+                        <view class='pr15 cm'>
+                            {{item.count}}次光疗
+                            <image src="../../image/right.png" class="ml15 rJ-a tr90" style='margin-bottom:-12rpx;'>
+                            </image>
+                        </view>
+                    </view>
+                </block>
+            </view>
+        </view>
+        <view style='text-align:right;' class="cm mlr_15 mt15 mb20">
+            共{{total_count}}次光疗</view>
+    </view>
+
+    <view wx:if="{{to_share && gl_list.length > 0}}" style="padding-bottom:230rpx">
+        <view class="flex-dcc relative zi_1 mlr_15 cgf br4 plr_15 mt15 bs">
+            <checkbox-group class="w100 flex-dc fw" bindchange="checkboxChange">
+                <label class="checkbox" wx:for="{{gl_list}}" wx:key="index" class="w100">
+                    <view class="flex-csb ptb_12 relative bt_e5" style="{{index==0?'border-top:0':''}}">
+                        <view class="flex-dc">
+                            <checkbox value="{{item.timestamp}}" />
+                            {{item.timestamp2}}
+                        </view>
+                        <view class='pr15 cm'>
+                            {{item.count}}次光疗
+                            <image src="../../image/right.png" class="ml15 rJ-a tr90" style='margin-bottom:-12rpx;'>
+                            </image>
+                        </view>
+                    </view>
+                </label>
+            </checkbox-group>
+        </view>
+        <view style='text-align:right;' class="cm mlr_15 mt15 mb20">
+            共{{total_count}}次光疗</view>
+    </view>
+
+    <image src="../../image/ic_yd.png" class="fixed" mode="widthFix"
+        style="right:30rpx;bottom: 300rpx;width:135rpx;z-index:2;" bindtap='toShare'
+        wx:if="{{from!='share' && !to_share && gl_list.length > 0}}"></image>
+
+    <view class="w100 fixed flex"
+        style="background-color:#f9f9f9;left:0;bottom:0;z-index:2;padding:30rpx 0;align-items: center;justify-content: center">
+        <button hover-class="none" wx:if="{{to_share}}" bindtap="showShare">
+            <image src="../../image/wx.png" mode="widthFix" style="width:120rpx;">
+            </image>
+        </button>
+    </view>
+
+    <image src="../../image/bg.png" class="fixed zi" mode="widthFix" style="left:0;bottom: 0;width:100%;"
+        wx:if="{{from!='share' && !to_share}}"></image>
+
+    <view class="mask flex-dcc2 jc-center" animation="{{animationData}}" wx:if="{{show_mask}}" catchtap="toggleMask">
+        <view class="w80 bg-ff br5" style="box-shadow:0 0 8px rgba(0,0,0,.2)" animation="{{animationData}}">
+            <view class="w100 ptb15">
+                <view class="w100 f17 c0 fw-bold ta-center">提示</view>
+                <view class="w100 f16 c0 ptb25 ta-center">确定分享选中的记录？</view>
+            </view>
+            <view class="w100 flex-csb">
+                <view class="flex1 ptb12 f15 c9 bg-f5 ta-center br5-b-l" catchtap="toggleMask">取消</view>
+                <button hover-class="none" class="flex1 ptb12 f15 cf bg-diy ta-center br0 br5-b-r"
+                    catchtap='onShareAppMessage' open-type="share">确定</button>
+            </view>
+        </view>
+    </view>
+
+    <view class="bottom" wx:if='{{show_calendar}}'>
+        <view class="balckBox" bindtap="showCalendar"></view>
+        <calendar calendar="{{calendar}}" gesture="{{gesture}}" class="calendar"
+            style="border-top-right-radius: 10px;border-top-left-radius:10px;"></calendar>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

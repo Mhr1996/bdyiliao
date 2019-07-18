@@ -1,0 +1,44 @@
+<!--index.wxml-->
+<view class="vh100">
+  <view class='p15'>
+    <view class="cgf mb15 plr_15 flex-dcc br6 bs pb15" wx:if="{{agb.connect==true}}">
+      <view class="flex-dc bb_e5 w100 ptb_10 relative">
+        <view style="width:170rpx;">设备序列号：</view>
+        <view class="flex1 mlr_5">{{ agb.attestation==false ? falseno : agb.no}}</view>
+        <view style="width: 160rpx;height: 62rpx; background-color: #486cff;line-height: 62rpx;"
+          class="cf center br4 fz12" wx:if="{{agb.attestation==false}}" bindtap='goAttestation' data-no="{{agb.no}}">去认证
+        </view>
+        <view wx:if="{{agb.attestation==true}}" class="cm center" style="width: 160rpx;height:line-height: 62rpx;">已认证
+        </view>
+      </view>
+      <view class="flex-dc bb_e5 w100 ptb_10">
+        <view style="width:170rpx;">设备类型：</view>
+        <view>{{agb.attestation==false?'无':type_name}}</view>
+      </view>
+      <view class="flex-dc bb_e5 w100 ptb_10">
+        <view style="width:170rpx;">出厂日期：</view>
+        <view>{{agb.attestation==false?'无':ftime}}</view>
+      </view>
+      <view class="flex-dc bb_e5 w100 ptb_10 relative">
+        <view style="width:170rpx;">设备版本号：</view>
+        <view>{{agb.attestation==false?'无':agb.version}}</view>
+        <view
+          style="width: 160rpx;height: 62rpx; background-color: #486cff;line-height: 62rpx;position:absolute;right:0;bottom:10rpx;"
+          class="cf center br4 fz12" wx:if="{{btnOn}}" bindtap='renew'>立即更新</view>
+        <!-- <view class="absolute cf center new" wx:if="{{item.renew}}" >NEW</view> -->
+        <view class="cm center"
+          style="width: 100rpx;height:line-height: 62rpx;line-height: 62rpx;position:absolute;right:0;bottom:10rpx;"
+          wx:if="{{!btnOn}}">已更新</view>
+      </view>
+    </view>
+    <view wx:else class='center'>暂无数据</view>
+  </view>
+  <view style='position:fixed;width:100%;height:100%;top:0;left:0;background-color:#000;opacity:0.6;'
+    wx-if="{{degree>0}}">
+    <view class='cgf p15 br5' style='position:absolute;top:50%;left:10%;width:80%;margin-top:-90rpx;'>
+      <progress percent="{{degree}}" show-info color='cf' style='width:100%;' />
+      在升级过程中请保持手机不要进入黑屏！以免升级失败！
+    </view>
+  </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

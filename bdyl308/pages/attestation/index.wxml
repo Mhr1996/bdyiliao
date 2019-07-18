@@ -1,0 +1,38 @@
+<!--index.wxml-->
+<view class="vh100 flex-dcc">
+  <image src='../../image/banner_2.png' mode='widthFix' style='width:597rpx;'></image>
+  <view class='dcc cgf br6 bs plr_15 mlr_15' style='margin-top:-40rpx;'>
+    <view class='flex-dc mt20 cm' wx:if="{{type==1}}">
+      <image src='../../image/ic_cg.png' class='mr10' style='width:38rpx; height:38rpx;'></image>已认证是半岛正品!
+    </view>
+    <!-- <view class='flex-dc mt20' style='color:#ff9648;'>
+            <image src='../../image/ic_cf.png' class='mr10' style='width:38rpx; height:38rpx;'></image>请勿重复认证!
+        </view> -->
+    <view class='flex-dc mt20' style='color:#ff6a48;' wx:if="{{type==2}}">
+      <image src='../../image/ic_sb.png' class='mr10' style='width:38rpx; height:38rpx;'></image>认证不通过!
+    </view>
+    <view class='flex-csb ptb_10 bb_e5'>
+      <view>姓名</view>
+      <input type="text" data-name="name" class='tr' bindinput='setVal' placeholder='请输入姓名'></input>
+    </view>
+    <view class='flex-csb ptb_10 bb_e5'>
+      <view>手机号</view>
+      <input type="number" data-name="phone" class='tr' maxlength="11" bindinput='setVal' placeholder='请输入手机号码'></input>
+    </view>
+    <view class='flex-csb ptb_10 bb_e5'>
+      <view>设备序列号</view>
+      <input type="number" data-name="macno" class='tr' bindinput='setVal' placeholder='请输入设备序列号' disabled="disabled"
+        value='{{agb.attestation==false?falseno:macno}}'></input>
+    </view>
+    <view class="ptb_20 cm fz12">
+      设备序列号将与个人信息绑定，不可更改，这将是售后维修的唯一凭证，请如实填写。
+    </view>
+  </view>
+  <view class='button mt50' bindtap='submit' wx:if="{{btnStatus==1}}">
+    立即认证
+  </view>
+  <navigator url="/pages/personalCenter/index" wx:if="{{btnStatus==2}}" class='button mt50'>
+    下一步
+  </navigator>
+</view>
+<login-component bind:myevent="listeningEvent" />

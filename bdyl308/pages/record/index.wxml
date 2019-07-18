@@ -1,0 +1,72 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view class="p15">
+        <view class="cgf mb15 br4 pt15 bs flex-css plr_15 relative">
+            <view style="top:11px;right:5px;z-index:10;padding:11px;width:75rpx;" class="absolute" wx:if="{{shape}}" bindtap='light'>
+                <image src="../../image/ic_gouxuan.png" class='mr10' style='width:31rpx;height:31rpx;' wx:if="{{item.active}}">
+                </image>
+                <view class='rd_s mr10' wx:if="{{!item.active}}"></view>
+            </view>
+            <navigator url="/pages/treatmentEnd/index" class='w100'>
+                <view class="c3 pl15 relative after mb10 cm">2019.03.28</view>
+                <view class='flex-csb w100 mb10'>
+                    <view>照射部位：脸部</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>照射时间：6s</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>辐照剂量：180mJ</view>
+                </view>
+                <view class='flex w100 mb10 ac'>
+                    红斑持续时间：
+                    <!-- <view class="cb">未填写</view> -->1天
+                    <image src="../../image/ic_tp.png" class="wh10 ml10"></image>
+                </view>
+            </navigator>
+        </view>
+    </view>
+    <view class="bottom" wx:if="{{cover}}">
+        <view class="balckBox" bindtap='elastic'></view>
+        <view class="cgf br_t_lr6 p20" style="height:980rpx; position:absolute; width:100%; bottom:0; left:0; z-index:10; ">
+            <view class="after bold relative pl10 mb15 fz16">选择部位</view>
+            <view class="item flex-csa wrap mb10" style="justify-content:flex-start;">
+                <view class=" {{item.active?'active': ''}} mb10" wx:for="{{bidList}}" wx:key="index" bindtap="position" data-listname="bidList" data-index="{{index}}">
+                    {{item.name}}
+                </view>
+            </view>
+            <view class="after bold relative pl10 mb20 fz16">选择日期</view>
+            <view class="dateItem flex-csa mb20">
+                <view class="{{item.active?'active': ''}}" wx:for="{{time}}" wx:key="index" bindtap="position" data-listname="time" data-index="{{index}}">
+                    {{item.name}}
+                </view>
+            </view>
+            <view class="bold pl10 fz16 mb20">选择日期</view>
+            <view class="mb10 flex-csa">
+                <picker mode="date" value="{{startTime}}" class="date_view relative" bindchange="startTimeChange">
+                    <view class="picker" class="flex-none f16 c9">
+                        {{startTime}}
+                    </view>
+                    <image src="../../image/ic_rl.png"></image>
+                </picker>
+                -
+                <picker mode="date" value="{{endTime}}" class="date_view relative" bindchange="endTimeChange">
+                    <view class="picker" class="flex-none f16 c9">
+                        {{endTime}}
+                    </view>
+                    <image src="../../image/ic_rl.png"></image>
+                </picker>
+            </view>
+            <view class="button mt30" bindtap='search'>确定</view>
+        </view>
+    </view>
+
+    <view style="{{shape ? 'display: block' :'display:none'}}" class="fixed bg">
+        <button bindtap='onShareAppMessage' open-type="share">
+            <image src="../../image/wx.png" class="fixed wx" mode="widthFix"></image>
+        </button>
+    </view>
+    <image src="../../image/ic_yd.png" class="fixed fx" mode="widthFix" style="{{!shape ? 'display: block' :'display:none'}}" bindtap='shape'></image>
+
+    <image src="../../image/ic_sx.png" class="fixed sx" mode="widthFix" style="{{!shape ? 'display: block' :'display:none'}}" bindtap='elastic'></image>
+</view>

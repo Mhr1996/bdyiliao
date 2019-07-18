@@ -1,0 +1,132 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view class="p15" wx:if="{{is_empty===0 && !to_share}}">
+        <block wx:for="{{gl_list}}" wx:key="index">
+            <navigator url="/pages/treatmentEnd/index?gl_id={{item.record_id}}&from={{from}}&nickname={{nickname}}"
+                hover-class="none" class="cgf mb15 br4 pt15 bs flex-css plr_15">
+                <view class='flex-csb w100'>
+                    <view class="cm pl15 relative after mb10 cm">{{item.ctime}}</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>照射部位：{{item.basic.name || '无'}}</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>照射时间：{{item.beam_time || '无'}}</view>
+                </view>
+                <view class='flex-csb w100 mb10'>
+                    <view>辐照剂量：{{item.dose || '无'}}</view>
+                </view>
+                <view class='flex w100 mb10 ac'>
+                    红斑持续时间：<text style="{{!item.last_time?'color:#ff6565':''}}">{{item.last_time || '未填写'}}</text>
+                    <image src="../../image/ic_tp.png" class="wh10 ml10" wx:if="{{item.img || item.end_img}}"></image>
+                </view>
+            </navigator>
+        </block>
+    </view>
+    <view class="p15" wx:if="{{is_empty===1}}">
+        <view class="w100" style="text-align:center">暂无记录</view>
+    </view>
+    <checkbox-group class="p15" style="padding-bottom:230rpx;justify-content:center;" wx:if="{{to_share}}"
+        bindchange="checkboxChange">
+        <label class="cgf mb15 br4 pt15 bs flex-css plr_15" wx:for="{{gl_list}}" wx:key="index">
+            <view class='flex-csb w100'>
+                <view class="c3 pl15 relative after mb10 cm">{{item.ctime}}</view>
+                <checkbox value="{{item.record_id}}" />
+            </view>
+            <view class='flex-csb w100 mb10'>
+                <view>照射部位：{{item.basic.name || '无'}}</view>
+            </view>
+            <view class='flex-csb w100 mb10'>
+                <view>照射时间：{{item.beam_time || '无'}}</view>
+            </view>
+            <view class='flex-csb w100 mb10'>
+                <view>辐照剂量：{{item.dose || '无'}}</view>
+            </view>
+            <view class='flex w100 mb10 ac'>
+                红斑持续时间：<text style="{{!item.last_time?'color:#ff6565':''}}">{{item.last_time || '未填写'}}</text>
+                <image src="../../image/ic_tp.png" class="wh10 ml10" wx:if="{{item.img || item.end_img}}"></image>
+            </view>
+        </label>
+    </checkbox-group>
+    <image src="../../image/ic_sx.png" class="fixed" mode="widthFix"
+        style="right:30rpx;bottom: 300rpx;width:135rpx;z-index:2;" bindtap='showOption' wx:if="{{!to_share}}"></image>
+    <image src="../../image/ic_yd.png" class="fixed" mode="widthFix"
+        style="right:30rpx;bottom: 150rpx;width:135rpx;z-index:2;" bindtap='toShare'
+        wx:if="{{from!='share' && !to_share && is_empty===0}}"></image>
+
+    <view class="w100 fixed flex"
+        style="background-color:#f9f9f9;left:0;bottom:0;z-index:2;padding:30rpx 0;align-items: center;justify-content: center">
+        <button hover-class="none" wx:if="{{to_share}}" bindtap="showShare">
+            <image src="../../image/wx.png" mode="widthFix" style="width:120rpx;">
+            </image>
+        </button>
+    </view>
+
+    <view class="mask flex-dcc jc-center" animation="{{animationData}}" wx:if="{{show_mask}}" catchtap="toggleMask">
+        <view class="w80 bg-ff br5" style="box-shadow:0 0 8px rgba(0,0,0,.2)" animation="{{animationData}}">
+            <view class="w100 ptb15">
+                <view class="w100 f17 c0 fw-bold ta-center">提示</view>
+                <view class="w100 f16 c0 ptb25 ta-center">确定分享选中的记录？</view>
+            </view>
+            <view class="w100 flex-csb">
+                <view class="flex1 ptb12 f15 c9 bg-f5 ta-center br5-b-l" catchtap="toggleMask">取消</view>
+                <button hover-class="none" class="flex1 ptb12 f15 cf bg-diy ta-center br0 br5-b-r"
+                    catchtap='onShareAppMessage' open-type="share">确定</button>
+            </view>
+        </view>
+    </view>
+
+    <view class="bottom" wx:if='{{show_option}}'>
+        <view class="balckBox" bindtap="showOption"></view>
+        <view class="w100 option-pane plr_15" style="border-top-left-radius: 10rpx;border-top-right-radius: 10rpx;">
+            <view class="pt10">
+                <view class="after relative pl10 mb15" style="font-weight:bold">选择部位</view>
+                <checkbox-group class="item flex-csa wrap mb10" style="justify-content:flex-start;"
+                    bindchange="checkboxChange2">
+                    <label class="mlr_5 mb10 {{item.checked?'active': ''}}" wx:for="{{part_list}}" wx:key="index"
+                        style='margin-left:17rpx;margin-right:17rpx;'>
+                        {{item.name}}
+                        <checkbox value="{{item.id}}" style="display:none" />
+                    </label>
+                </checkbox-group>
+            </view>
+            <view class="pt10">
+                <view class="after relative pl10 mb15" style="font-weight:bold">选择日期</view>
+                <radio-group class="item flex-csa wrap mb10" style="justify-content:flex-start;"
+                    bindchange="radioChange">
+                    <label class="mlr_5 mb10 {{item.checked?'active': ''}}" wx:for="{{date_list}}" wx:key="index"
+                        style='margin-left:17rpx;margin-right:17rpx;'>
+                        {{item.name}}
+                        <radio value="{{item.id}}" style="display:none" />
+                    </label>
+                </radio-group>
+            </view>
+            <view>
+                <view class="relative pl10 mb15" style="font-weight:bold">自定义时间</view>
+                <view class="flex-csb plr_10">
+                    <picker mode="date" value="{{start_time}}" end="{{end_time}}" bindchange="bindDateChange1"
+                        style="flex:1">
+                        <view class="picker flex-csb br4"
+                            style="border:1px solid rgba(72,108,255,.5);padding:14rpx 20rpx">
+                            <view>{{start_time}}</view>
+                            <image src="../../image/ic_rl.png" mode="widthFix" style="width:32rpx;">
+                            </image>
+                        </view>
+                    </picker>
+                    <view style="width:35rpx;height:3rpx;flex: 0 0 auto;margin:0 30rpx;background:#999;"></view>
+                    <picker mode="date" value="{{end_time}}" start="{{start_time}}" bindchange="bindDateChange2"
+                        style="flex:1">
+                        <view class="picker flex-csb br4"
+                            style="border:1px solid rgba(72,108,255,.5);padding:14rpx 20rpx">
+                            <view>{{end_time}}</view>
+                            <image src="../../image/ic_rl.png" mode="widthFix" style="width:32rpx;">
+                            </image>
+                        </view>
+                    </picker>
+                </view>
+            </view>
+            <view class='button mt30' bindtap="confirm">确定</view>
+        </view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

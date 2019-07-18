@@ -1,0 +1,108 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='fg1 flex-dc m12'>
+        <image src="{{user_info.avatar}}" class='wh45 mr12 br50'></image>
+        <view>{{user_info.nickname}}</view>
+    </view>
+    <view class='mlr_15 flex-csb relative mb15' style='height:340rpx;'>
+        <image src="../../image/car.png" class='wh100 absolute zi' style='width:100%;'></image>
+        <view class='flex7 flex-css zi_1 h100' style='padding:40rpx 0;'>
+            <view class="cf flex1 fz14 ac flex">
+                <image src="../../image/ic_bianhao.png" class="wh14 mlr_15"></image>
+                设备编号：{{bluetooth.no&&bluetooth.attestation ? bluetooth.no : bluetooth.no&&bluetooth.attestation==false ? '未认证' :'未连接'}}
+            </view>
+            <view class="cf flex1 fz14 ac flex">
+                <image src="../../image/ic_zhuangtai.png" class="wh14 mlr_15"></image>
+                设备状态：{{bluetooth.status==1 ?'等待光疗':bluetooth.status==2 ? '暂停光疗':bluetooth.status==3 ?'正在光疗':'未连接'}}
+            </view>
+            <view class="cf flex1 fz14 ac flex">
+                <image src="../../image/ic_shijian.png" class="wh14 mlr_15"></image>
+                照射时间：{{bluetooth.setTime ? '' : '无'}}
+                <view class='flex-none span fz18 cf' style='color:#fff4a8;' wx:if="{{bluetooth.setTime}}">
+                    {{bluetooth.setTime}}s</view>
+            </view>
+            <view class="cf flex1 fz14 ac flex">
+                <image src="../../image/ic_fzjl.png" class="wh14 mlr_15"></image>辐照剂量：{{bluetooth.setTime ? '' : '无'}}
+                <view class='flex-none span fz16 cf' style='color:#fff4a8;' wx:if="{{bluetooth.setTime}}">
+                    {{bluetooth.setTime*30}}<view class="12 fl" style='color:#fff4a8;float:right;'>mJ</view>
+                </view>
+            </view>
+        </view>
+        <view class='flex5 flex-ccs zi_1 h100' style='padding:95rpx 0;'>
+            <view hover-class="none" class='flex5 flex-ccs zi_1 h100' bindtap='goConnect'>
+                <image src="{{bluetooth.connect?'../../image/ic_ly_02.png':'../../image/ic_ly_01.png'}}"
+                    style='width:66rpx; height:66rpx;'></image>
+                <view class='cf br4 p6_8 fz12' style='background-color:#6180ff;' wx:if="{{!bluetooth.connect}}">设备未连接
+                </view>
+                <view class='cgf br4 p6_8 fz12' style='color:#6180ff;' wx:if="{{bluetooth.connect}}">设备已连接</view>
+            </view>
+        </view>
+    </view>
+    <view class='mlr_15 cgf br4 p20 bs'>
+        <view class='flex-csb mb20 '>
+            <view class="bold">最近光疗历史</view>
+            <navigator url="/pages/history/index" hover-class="none" wx:if="{{!!gl_list && gl_list.length>0}}">
+                <view class="cb">更多记录
+                    <image src="../../image/right.png" class="rJ ml15"></image>
+                </view>
+            </navigator>
+            <view wx:if="{{!!gl_list && gl_list.length==0}}">
+                <view class="cb">更多记录
+                    <image src="../../image/right.png" class="rJ ml15"></image>
+                </view>
+            </view>
+        </view>
+        <view class="w100" wx:if="{{!!gl_list && gl_list.length>0}}">
+            <view class='flex-csb mb10'>
+                <view>照射部位：{{gl_detail.basic.name}}</view>
+                <view class="c9 fz12">{{gl_detail.ctime}}</view>
+            </view>
+            <view class='flex-csb mb10'>
+                <view>照射时间：{{gl_detail.beam_time}}</view>
+            </view>
+            <view class='flex-csb mb10'>
+                <view>辐照剂量：{{gl_detail.dose}}</view>
+            </view>
+            <view class='flex-csb'>
+                <view>红斑持续时间：<text
+                        style="{{gl_detail.last_time=='未填写'?'color:#ff6565':''}}">{{gl_detail.last_time}}</text>
+                    <image src="../../image/ic_tp.png" class="wh10 ml10" wx:if="{{gl_detail.img || gl_detail.end_img}}">
+                    </image>
+                </view>
+            </view>
+        </view>
+        <view wx:if="{{!!gl_list && gl_list.length==0}}" class="w100 center">暂无光疗记录</view>
+    </view>
+    <view class='mlr_15 cgf br4 p20_15 mt10 bs' style='padding-bottom:20rpx;'>
+        <view class='flex mb20'>更多</view>
+        <view class='flex-cont'>
+            <block wx:for="{{icon_list}}" wx:key="index">
+                <navigator url="{{item.url}}" hover-class="none" class="w25 mb15">
+                    <view class="flex-dcc">
+                        <image src="{{dlcurl+'/public'+item.icon}}" style="width:90rpx;height:86rpx" class="mb5">
+                        </image>
+                        <view class="c6">{{item.title}}</view>
+                    </view>
+                </navigator>
+            </block>
+        </view>
+    </view>
+    <view class='mlr_15 cgf br4 p20_15 mtb_10 bs'>
+        <navigator url="/pages/advert/index" hover-class="none" class='flex-csb mb20'>更多
+            <image src="../../image/right.png" class="rJ ml15"></image>
+        </navigator>
+        <view>
+            <swiper indicator-dots="{{ad_list.length>1?true:false}}" autoplay="{{ad_list.length>1?true:false}}"
+                circular="{{ad_list.length>1?true:false}}" vertical="{{vertical}}" interval="{{interval}}"
+                duration="{{duration}}" previous-margin="{{previousMargin}}px" next-margin="{{nextMargin}}px"
+                style='height:200rpx;' indicator-color="#cfcfcf" indicator-active-color="#fff">
+                <block wx:for="{{ad_list}}" wx:key="index">
+                    <swiper-item>
+                        <image src="{{item.image}}" class="w100 br6" style="height:300rpx"></image>
+                    </swiper-item>
+                </block>
+            </swiper>
+        </view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

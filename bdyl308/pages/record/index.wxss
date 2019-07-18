@@ -1,0 +1,114 @@
+/**index.wxss**/
+
+page {
+    background-color: #f9f9f9;
+}
+
+.bottom {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    z-index: 10;
+}
+
+.bottom .balckBox {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    bottom: 0;
+    background: #000;
+    opacity: 0.7;
+    z-index: 1;
+}
+
+.item view {
+    width: 135rpx;
+    height: 66rpx;
+    border-radius: 10rpx;
+    text-align: center;
+    line-height: 66rpx;
+    border: solid 1px #999;
+    margin-left: 17rpx;
+    margin-right: 17rpx;
+}
+
+.item view.active {
+    background-color: #486cff;
+    border-radius: 10rpx;
+    color: #fff;
+}
+
+.dateItem view {
+    width: 175rpx;
+    height: 66rpx;
+    line-height: 66rpx;
+    text-align: center;
+    border-radius: 10rpx;
+    border: solid 1px #999;
+}
+
+.dateItem view.active {
+    background-color: #486cff;
+    border-radius: 10rpx;
+    color: #fff;
+    border: solid 1px #fff;
+}
+
+.date_view {
+    width: 270rpx;
+    border-radius: 10rpx;
+    height: 66rpx;
+    line-height: 66rpx;
+    border: solid 1px #486cff;
+    padding-left: 26rpx;
+    padding-top: 12rpx;
+    box-sizing: border-box;
+}
+
+.item view.active {
+    background-color: #486cff;
+    border-radius: 10rpx;
+    color: #fff;
+    border: solid 1px #fff;
+}
+
+.date_view image {
+    width: 26rpx;
+    height: 26rpx;
+    position: absolute;
+    top: 17rpx;
+    right: 30rpx;
+}
+
+.bg {
+    background-color: #f5f5f5;
+    right: 0;
+    bottom: 0;
+    height: 270rpx;
+    width: 100%;
+}
+
+.bg .wx {
+    right: 50%;
+    bottom: 60rpx;
+    width: 120rpx;
+    z-index: 2;
+    margin-right: -60rpx;
+}
+
+.fx {
+    right: 30rpx;
+    bottom: 200rpx;
+    width: 135rpx;
+    z-index: 2;
+}
+
+.sx {
+    right: 30rpx;
+    bottom: 340rpx;
+    width: 135rpx;
+    z-index: 2;
+}

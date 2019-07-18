@@ -1,0 +1,14 @@
+/**index.wxss**/
+page{
+    background-color: #f9f9f9
+}
+.new{
+	width: 86rpx;
+	height: 36rpx;
+	border-radius: 18rpx;
+	background-color: #ff504e;
+	line-height: 36rpx;
+	left: 280rpx;
+	top:50%;
+	margin-top: -18rpx;
+}

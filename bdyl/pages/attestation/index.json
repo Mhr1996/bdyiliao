@@ -1,0 +1,6 @@
+{
+	"usingComponents": {
+        "login-component": "/component/login-component/login-component"
+    },
+    "navigationBarTitleText": "设备认证"
+}

@@ -1,0 +1,19 @@
+<!--index.wxml-->
+<view class="vh100 relative">
+    <view class="flex-dcc relative zi_1 mlr_15 cgf br4 plr_15 mt15 bs">
+        <view wx:for="{{title}}" wx:key="index" class="w100 flex-dc fw">
+            <view class="w100 flex-dc ptb_10 relative bt_e5" bindtap='switchStatus' data-index="{{index}}" style="{{index==0?'border-top:0px':''}}">
+                <image src="{{item.img}}" mode='widthFix' style='width:52rpx;' class='mr15'></image>
+                {{item.name}}
+                <image src="../../image/right.png" class="ml15 rJ-a " style='margin-bottom:-15rpx;{{item.active?"transform:rotate(90deg)":""}}'></image>
+            </view>
+            <view wx:if="{{item.active}}" class='fz13 w100' style='padding-left:88rpx;'>
+                <view class='pb10 c9 w100'>2018.12记录</view>
+                <view class='pb10 c9 w100'>2018.12记录</view>
+                <view class='pb10 c9 w100'>2018.12记录</view>
+            </view>
+        </view>
+    </view>
+    <image src="../../image/bg.png" class="fixed zi" mode="widthFix" style="left:0;bottom: 0;width:100%"></image>
+</view>
+<login-component bind:myevent="listeningEvent"/>
