@@ -1,0 +1,17 @@
+<!--index.wxml-->
+<view class="vh100">
+    <view class='mlr_15 cgf br4 p20_15 mt10 bs' style='padding-bottom:20rpx;'>
+        <view class='flex-cont'>
+            <block wx:for="{{icon_list}}" wx:key="index">
+                <navigator url="{{item.url}}" hover-class="none" class="w25 mb15">
+                    <view class="flex-dcc">
+                        <image src="{{dlcurl+'/public'+item.icon}}" style="width:90rpx;height:86rpx" class="mb5">
+                        </image>
+                        <view class="c6">{{item.title}}</view>
+                    </view>
+                </navigator>
+            </block>
+        </view>
+    </view>
+</view>
+<login-component bind:myevent="listeningEvent" />

@@ -13,9 +13,11 @@ Page({
     pagesize: 999,
     testStr: '',
     falseno: '',
-    degree: 0,  //进度条
+    degree: 0, //进度条
     agb: null,
-    btnOn: false
+    btnOn: false,
+    apino: '', //未连接时查询到的设备序列号
+    edition: '' //未连接时查询到的设备版本号
   },
 
   onLoad: function(e) {
@@ -38,24 +40,33 @@ Page({
       agb: agb
     })
 
-    if (self.data.agb.connect == true && self.data.agb.no) {
-      app.mt.gd(app.wxRequest,
-        '/wxsite/Shair/api', {
-          api_name: 'device_list',
-          macno: app.globalData.bluetooth.no //self.data.agb.no
-        }, (res) => {
+    app.mt.gd(app.wxRequest,
+      '/wxsite/Shair/api', {
+        api_name: 'device_list',
+        macno: app.globalData.bluetooth.no //
+      }, (res) => {
+        if (app.globalData.bluetooth.connect == true) {
           self.setData({
-            type_name: res.device_type.type_name,
-            ftime: app.tools.format(res.ftime * 1000, '年月')
-          })
-          if (res.edition != agb.no && agb.no != "" & agb.no) {
-            self.setData({
-              btnOn: true
-            })
+            ftime: app.tools.format(res[0].ftime * 1000, '年月')
+          });
+          if (res[0].edition != agb.version && agb.no != "" && agb.no) {
+            if (Number(res[0].edition.substr(-3).replace(/\./g, "")) > Number(agb.version.substr(-3).replace(/\./g, ""))) {
+              self.setData({
+                btnOn: true
+              })
+            }
           }
-        }, app.tools.error_tip
-      );
-    }
+        } else {
+          self.setData({
+            apino: res[0].macno,
+            ftime: app.tools.format(res[0].ftime * 1000, '年月'),
+            edition: res[0].edition,
+            btnOn: false
+          })
+        }
+
+      }, app.tools.error_tip
+    );
   },
 
   listeningEvent(e) {
@@ -87,14 +98,12 @@ Page({
           wx.downloadFile({ //下载文件 根据文件地址
             url: res.file,
             success(res) {
-              console.log(res)
               // 只要服务器有响应数据，就会把响应内容写入文件并进入 success 回调，业务需要自行判断是否下载到了想要的内容
               if (res.statusCode === 200) {
                 wx.getFileSystemManager().readFile({ //读取本地文件
                   filePath: res.tempFilePath,
                   success: res2 => {
                     let fileStr = self.buf2hex(res2.data);
-                    console.log("fileStr2:" + fileStr);
 
                     //发送次数 /1024字节数据 就是2048个字符
                     let bagNum = Math.ceil(fileStr.length / 2048);
@@ -115,7 +124,6 @@ Page({
                     wx.onBLECharacteristicValueChange((res) => {
                       //clearInterval(self.data.countdown); //结束倒计时
                       let guest = self.buf2hex(res.value);
-                      console.log(guest);
                       switch (guest.substr(14, 2)) {
                         case "10":
                           console.log("升级指令接收成功");
@@ -135,7 +143,6 @@ Page({
 
                           if (self.data.arrIndex < self.data.arr.length) {
                             self.subpackage(self.data.arr[self.data.arrIndex]);
-                            console.log("arindex+pid:" + self.data.arrIndex, self.data.pid);
                           } else {
                             let endCon = self.convert16();
                             //发送完成 发送升级结束命令
@@ -149,16 +156,35 @@ Page({
                           break;
                         case "12":
                           //升级完成
-                          console.log(self.data.testStr)
                           console.log("升级完成！" + guest.substr(16, 2));
-                          if (guest.substr(16, 2)=="00"){
-                            app.toast("升级完成，请重新连接！");
-                            app.initialize();
-                            setTimeout(()=>{
-                              wx.reLaunch({
-                                url: '/pages/index/index'
-                              })
-                            },2000);
+                          if (guest.substr(16, 2) == "00") {
+                            wx.showModal({
+                              title: '提示',
+                              content: '升级完成，请重新连接！',
+                              showCancel: false,
+                              success(res) {
+                                if (res.confirm) {
+                                  app.initialize();
+                                  wx.reLaunch({
+                                    url: '/pages/index/index'
+                                  })
+                                }
+                              }
+                            })
+                          } else if (guest.substr(16, 2) == "01") {
+                            wx.showModal({
+                              title: '提示',
+                              content: '升级失败，请重新连接升级！',
+                              showCancel: false,
+                              success(res) {
+                                if (res.confirm) {
+                                  app.initialize();
+                                  wx.reLaunch({
+                                    url: '/pages/index/index'
+                                  })
+                                }
+                              }
+                            })
                           }
                           break;
                         default:
@@ -183,9 +209,11 @@ Page({
   },
 
   goAttestation(e) {
-    wx.redirectTo({
-      url: '/pages/attestation/index'
-    })
+    if (app.globalData.bluetooth.connect == true) {
+      wx.redirectTo({
+        url: '/pages/attestation/index'
+      })
+    }
   },
 
   send(scs) { //发送数据并读取返回数据 data为需要发送的数据指令（16位16进制组成的字符串）
@@ -232,7 +260,6 @@ Page({
         }
       },
       fail(err) {
-        console.log(err);
         wx.hideLoading();
       }
     })
@@ -245,15 +272,10 @@ Page({
     self.setData({
       testStr: self.data.testStr + str
     });
-    //console.log("str.length:" + str.length);
     let lenL = (str.length + 26) / 2;
-    console.log("lenL:" + lenL);
     lenL = self.byteChange(lenL);
 
-    console.log(lenL)
-    console.log("self.byteChange(self.data.pid):" + self.byteChange(self.data.pid))
     let arr = self.cutting2("244244AE" + sc16 + lenL + "91" + self.byteChange(self.data.pid) + str + crc.CRC.ToModbusCRC16("244244AE" + sc16 + lenL + "91" + self.byteChange(self.data.pid) + str) + "04", 40);
-    console.log(arr)
 
     for (let i = 0; i < arr.length; i++) {
       (function(j) {
@@ -303,7 +325,6 @@ Page({
     if (num.length < 2) {
       num = "0" + num;
     }
-    console.log("convert16:" + num);
 
     return num;
   },

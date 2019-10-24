@@ -61,3 +61,17 @@
 .login:active{
     background-color: #ccc;
 }
+.plr30 {
+    padding-left: 60rpx;
+    padding-right: 60rpx;
+}
+.csb{
+  display: flex;
+  justify-content: space-between;
+}
+.button.cancel{
+  width: 45%;height: 96rpx;background-color: #cfcfcf;border-radius: 10rpx;color: #fff;margin: 0 auto;line-height: 96rpx;text-align: center;font-size: 32rpx;
+}
+.button.loginBtn{
+  width: 45%;height: 96rpx;background-color: #486cff;border-radius: 10rpx;color: #fff;margin: 0 auto;line-height: 96rpx;text-align: center;font-size: 32rpx;
+}

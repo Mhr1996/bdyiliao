@@ -33,6 +33,7 @@ Page({
     },
 
     onLoad(e) {
+        wx.hideShareMenu() //隐藏右上角转发功能
         this.setData({
             from: e.from || '',
             ids: e.from == 'share' ? e.ids : '',
@@ -247,9 +248,10 @@ Page({
             // 来自页面内转发按钮
             this.setData({
                 ids: '',
-                show_mask: false
+                show_mask: false,
+                to_share: false
             })
-            console.log(res.target)
+            this.onShow()
         }
         return {
             title: this.data.share_info.share_title,

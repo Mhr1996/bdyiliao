@@ -24,7 +24,8 @@ Page({
         avatar: wx.getStorageSync('avatarUrl')
       },
       dlcurl: app.globalData.dlcurl,
-      bluetooth: app.globalData.bluetooth
+      bluetooth: app.globalData.bluetooth,
+      token: wx.getStorageSync('token')
     });
 
     this.getIconList();

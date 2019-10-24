@@ -39,14 +39,14 @@
             <!-- <view class="ptb_15">
                 <view>患处照片</view>
             </view> -->
-            <view class="flex-csb w100 ptb_15">
+            <view class="flex-cfs w100 ptb_15">
                 <view>患处照片</view>
-                <button
+                <!-- <button
                     style='width:192rpx;height:62rpx;color:#486cff;border:solid 1px #486cff;line-height:62rpx;background-color:#fff;float:right;margin:0'
-                    bindtap="toUpload" wx:if="{{from!='share' && has_pic === 0}}">上传图片</button>
+                    bindtap="toUpload" wx:if="{{from!='share' && has_pic === 0}}">上传图片</button> -->
             </view>
             <view class="cm pb15 fz12"> (建议上传光疗结束及出现红斑时的图片，以便后期对比) </view>
-            <view class="bb_e5 flex-dc pb15" wx:if="{{end_img || img}}">
+            <view class="bb_e5 flex-dc pb15">
                 <view class="flex-dcc mr20" style="position:relative" wx:if="{{!!end_img}}">
                     <image src="../../image/ic_sc.png"
                         style="width: 45rpx;height: 45rpx;position:absolute;top:-10rpx;right:-10rpx;z-index:2"
@@ -54,11 +54,20 @@
                     <image src="{{dlcurl+'/public'+end_img}}" style="width: 160rpx;height: 160rpx;"></image>
                     <view class="c6 fz12 pt10">光疗结束</view>
                 </view>
+                <view class="flex-dcc mr20" style="position:relative" wx:if="{{!end_img}}" data-type="1"
+                    bindtap="uploadPic">
+                    <image src="../../image/ic_pz.png" style="width: 160rpx;height: 160rpx;"></image>
+                    <view class="c6 fz12 pt10">光疗结束</view>
+                </view>
                 <view class="flex-dcc" style="position:relative" wx:if="{{!!img}}">
                     <image src="../../image/ic_sc.png"
                         style="width: 45rpx;height: 45rpx;position:absolute;top:-10rpx;right:-10rpx;z-index:2"
                         wx:if="{{from!='share' && has_pic === 0}}" bindtap="removeImg" data-type="2"></image>
                     <image src="{{dlcurl+'/public'+img}}" style="width: 160rpx;height: 160rpx;"></image>
+                    <view class="c6 fz12 pt10">红斑情况</view>
+                </view>
+                <view class="flex-dcc" style="position:relative" wx:if="{{!img}}" data-type="2" bindtap="uploadPic">
+                    <image src="../../image/ic_pz.png" style="width: 160rpx;height: 160rpx;"></image>
                     <view class="c6 fz12 pt10">红斑情况</view>
                 </view>
             </view>

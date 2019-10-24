@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/myDevices/index",
+    "pages/moreFunction/index",
     "pages/attestation/index",
     "pages/treatmentEnd/index",
     "pages/advert/index",
@@ -11,8 +13,7 @@
     "pages/uploadImg/index",
     "pages/linkBluetooth/index",
     "pages/afterService/index",
-    "pages/noviceTutorial/index",
-    "pages/myDevices/index"
+    "pages/noviceTutorial/index"
   ],
   "window": {
     "backgroundTextStyle": "light",

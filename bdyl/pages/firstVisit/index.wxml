@@ -1,23 +1,23 @@
 <!--index.wxml-->
 <view class="vh100" wx:if="{{list.length > 0}}">
-    <view class="cgf m15 plr_15 flex-css br6 bs">
+    <view class="cgf m15 plr_15 flex-css br6 bs" wx:if="{{first_visit_ids && first_visit_ids == '-1'}}">
         <block wx:for="{{list}}" wx:key="index">
             <view class='w100 mt15 bold fz16 after relative pl15'>{{item.question}}</view>
             <radio-group class="radio-group w100 plr_15" bindchange="radioChange"
                 data-question_id="{{item.question_id}}" wx:if="{{item.status==1}}">
-                <label class="cgf pt15 flex-dc mb15 w100" wx:for="{{item.answer}}" wx:for-index="index2"
-                    wx:for-item="item2" wx:key="index2">
-                    <radio value="{{item2.answer_id}}" color="#486cff" checked="{{item2.is_answer==1?true:false}}"
-                        disabled="{{first_visit_ids?true:false}}" />
-                    <view class="flex1">{{item2.answer}}</view>
-                </label>
+                <block wx:for="{{item.answer}}" wx:for-index="index2" wx:for-item="item2" wx:key="index2">
+                    <label class="cgf pt15 flex-dc mb15 w100">
+                        <radio value="{{item2.answer_id}}" color="#486cff"
+                            checked="{{item2.is_answer==1?true:false}}" />
+                        <view class="flex1">{{item2.answer}}</view>
+                    </label>
+                </block>
             </radio-group>
             <checkbox-group bindchange="checkboxChange" class="w100 plr_15" data-question_id="{{item.question_id}}"
                 wx:if="{{item.status==2}}">
                 <label class="checkbox cgf pt15 flex-dc mb15 w100" wx:for="{{item.answer}}" wx:for-index="index2"
                     wx:for-item="item2" wx:key="index2">
-                    <checkbox value="{{item2.answer_id}}" checked="{{item2.is_answer==1?true:false}}"
-                        disabled="{{first_visit_ids?true:false}}" />
+                    <checkbox value="{{item2.answer_id}}" checked="{{item2.is_answer==1?true:false}}" />
                     <view class="flex1">{{item2.answer}}</view>
                 </label>
             </checkbox-group>
@@ -26,7 +26,15 @@
                 disabled="{{first_visit_ids?true:false}}" bindinput="checkValue"></textarea> -->
         </block>
     </view>
-    <view class='button mb15' bindtap="submit" wx:if="{{from!='share'&&first_visit_ids===0}}">
+    <view class="cgf m15 plr_15 flex-css br6 bs" wx:if="{{first_visit_ids && first_visit_ids != '-1'}}">
+        <block wx:for="{{list}}" wx:key="index">
+            <view class='w100 mt15 mb10 bold fz16 after relative pl15'>{{item.question}}</view>
+            <block wx:for="{{item.answer}}" wx:for-index="index2" wx:for-item="item2" wx:key="index2">
+                <view style="padding-left:24rpx;line-height:1.8" wx:if="{{item2.is_answer==1}}">{{item2.answer}}</view>
+            </block>
+        </block>
+    </view>
+    <view class='button mb15' bindtap="submit" wx:if="{{from!='share'&&first_visit_ids=='-1'}}">
         提交
     </view>
 </view>

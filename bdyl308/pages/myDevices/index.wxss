@@ -12,3 +12,15 @@ page{
 	top:50%;
 	margin-top: -18rpx;
 }
+.attestation{
+  width: 160rpx;height: 62rpx; background-color: #486cff;line-height: 62rpx;
+}
+.attestation.grey{
+  background-color: #ccc;
+}
+.updateBtn{
+  width: 160rpx;height: 62rpx; background-color: #486cff;line-height: 62rpx;position:absolute;right:0;bottom:10rpx;
+}
+.updateBtn.grey{
+  background-color: #ccc;
+}

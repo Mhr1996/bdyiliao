@@ -53,7 +53,7 @@ function switchTab(index, titles, type, active) {
 
 function getData(post, url, data, callback, err) {
     let self = this
-    if (!wx.getStorageSync('token')) { return; }
+    //if (!wx.getStorageSync('token')) { return; }
     wx.showLoading({
         title: '加载中...',
         mask: true

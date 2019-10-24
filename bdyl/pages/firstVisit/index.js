@@ -12,14 +12,16 @@ Page({
 
     onLoad(e) {
         this.setData({
-            first_visit_ids: e.first_visit_ids || 0,
+            first_visit_ids: e.first_visit_ids || '-1',
             firesAtte: e.firesAtte || '',
             from: e.from || ''
         })
+        console.log(e.first_visit_ids)
+        console.log(this.data.first_visit_ids)
     },
 
     onShow() {
-        this.data.first_visit_ids ? this.getList2() : this.getList()
+        this.data.first_visit_ids != '-1' ? this.getList2() : this.getList()
     },
 
     onHide() {
@@ -42,6 +44,7 @@ Page({
                 this.setData({
                     list: list
                 })
+                console.log('list', this.data.list)
             }, app.tools.error_tip
         );
     },
@@ -57,7 +60,7 @@ Page({
                 this.setData({
                     list: list
                 })
-                console.log(this.data.list)
+                console.log('list2', this.data.list)
             }, app.tools.error_tip
         );
     },

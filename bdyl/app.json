@@ -1,10 +1,10 @@
 {
     "pages": [
         "pages/index/index",
+        "pages/myDevices/index",
         "pages/treatmentEnd/index",
         "pages/history/index",
         "pages/personalCenter/index",
-        "pages/myDevices/index",
         "pages/firstVisit/index",
         "pages/effect/index",
         "pages/uploadImg/index",

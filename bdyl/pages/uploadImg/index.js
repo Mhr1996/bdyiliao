@@ -100,6 +100,8 @@ Page({
 				}, app.tools.error_tip
 			);
 		} else {
+      let pages = getCurrentPages();
+      let prevPage = pages[pages.length - 2]; 
 			wx.showToast({
 				title: '上传成功',
 				icon: 'success',
@@ -107,9 +109,13 @@ Page({
 				mask: true
 			})
 			setTimeout(() => {
-				wx.redirectTo({
-					url: '/pages/treatmentEnd/index?total_lispic=' + total_lispic.join(',') + '&datas=' + this.data.datas
-				})
+        prevPage.setData({
+          total_lispic_str: total_lispic.join(','),
+          total_lispic: total_lispic.join(',').split(',')
+        })
+        wx.navigateBack({
+          delta: 1  // 返回上一级页面。
+        })
 				total_lispic = []
 			}, 1200)
 		}

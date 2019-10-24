@@ -48,6 +48,6 @@
         <view class="mlr_15 pt15 fz18">本月光疗记录：{{selected_day_list.length+selected_day_list2.length}}次</view>
         <calendar calendar="{{calendar}}" gesture="{{gesture}}" class="calendar"></calendar>
     </view>
-    <view class='button mt50 mb20' bindtap='submit'>保存</view>
+    <view class='button mt50 mb20' bindtap='submit2' wx:if="{{bluetooth.treatment_id!='' && total_lispic}}">保存</view>
 </view>
 <login-component bind:myevent="listeningEvent" />

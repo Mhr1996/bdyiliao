@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view class="vh100">
-    <view class='fg1 flex-dc m12'>
+    <view class='fg1 flex-dc m12' wx:if="{{token!=''}}">
         <image src="{{user_info.avatar}}" class='wh45 mr12 br50'></image>
         <view>{{user_info.nickname}}</view>
     </view>
@@ -38,7 +38,7 @@
             </view>
         </view>
     </view>
-    <view class='mlr_15 cgf br4 p20 bs'>
+    <view class='mlr_15 cgf br4 p20 bs' wx:if="{{token!=''}}">
         <view class='flex-csb mb20 '>
             <view class="bold">最近光疗历史</view>
             <navigator url="/pages/history/index" hover-class="none" wx:if="{{!!gl_list && gl_list.length>0}}">
@@ -54,7 +54,7 @@
         </view>
         <view class="w100" wx:if="{{!!gl_list && gl_list.length>0}}">
             <view class='flex-csb mb10'>
-                <view>照射部位：{{gl_detail.basic.name}}</view>
+                <view>照射部位：<text style="{{!gl_detail.basic?'color:#ff6565':''}}">{{gl_detail.name}}</text></view>
                 <view class="c9 fz12">{{gl_detail.ctime}}</view>
             </view>
             <view class='flex-csb mb10'>
@@ -74,7 +74,7 @@
         <view wx:if="{{!!gl_list && gl_list.length==0}}" class="w100 center">暂无光疗记录</view>
     </view>
     <view class='mlr_15 cgf br4 p20_15 mt10 bs' style='padding-bottom:20rpx;'>
-        <view class='flex mb20'>更多</view>
+        <navigator class='flex-csb mb20' url="/pages/moreFunction/index">更多<image src="../../image/right.png" class="rJ ml15"></image></navigator>
         <view class='flex-cont'>
             <block wx:for="{{icon_list}}" wx:key="index">
                 <navigator url="{{item.url}}" hover-class="none" class="w25 mb15">
@@ -105,4 +105,4 @@
         </view>
     </view>
 </view>
-<login-component bind:myevent="listeningEvent" />
+<!-- <login-component bind:myevent="listeningEvent" /> -->

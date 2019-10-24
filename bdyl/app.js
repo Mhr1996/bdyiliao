@@ -91,6 +91,7 @@ App({
       endTime: '',    //结束时间
       eT: null,
       no: '',         //设备序列号
+      noName: '',     //设备序列号 0转A 1转B 显示别名
       packageNo: 1,   //包号
       splicingNo: '', //拼接长度过长的蓝牙指令
       spT: '',        //surplus剩余时间
@@ -103,7 +104,8 @@ App({
       workDown: '',   //2s未收到命令则提示非正常结束
       cureNo: null,    //治疗次数编号
       breakOff: false, //是否断开过
-      phoneOff: false    //手机蓝牙是否断开
+      phoneOff: false, //手机蓝牙是否断开
+      treatment_id: '' //治疗订单
     },
     info: null
   },
@@ -140,6 +142,8 @@ App({
     this.globalData.bluetooth.version = '';
     this.globalData.bluetooth.workDown = '';
     this.globalData.bluetooth.attestation = false;
+    this.globalData.bluetooth.treatment_id = '';
+    this.globalData.bluetooth.noName='';
     if(sk){
       this.globalData.bluetooth.startTime = '';
       this.globalData.bluetooth.sT = null;

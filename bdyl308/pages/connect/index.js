@@ -13,7 +13,7 @@ Page({
     serviceId2: '0000FFE0-0000-1000-8000-00805F9B34FB',
     tag: 1
   },
-  onShow: function () {
+  onShow: function() {
     let self = this;
     wx.showLoading({
       title: '加载中',
@@ -28,6 +28,7 @@ Page({
           if (res.confirm) {
             app.initialize();
             self.start();
+            clearInterval(self.data.countdown);
           } else if (res.cancel) {
             wx.redirectTo({
               url: '/pages/index/index'
@@ -40,12 +41,12 @@ Page({
     }
   },
   //初始化蓝牙适配器
-  start: function () {
+  start: function() {
     let self = this;
     //关闭蓝牙模块，使其进入未初始化状态。调用该方法将断开所有已建立的链接并释放系统资源。
     //建议在使用小程序蓝牙流程后调用，与wx.openBluetoothAdapter成对调用。
     wx.closeBluetoothAdapter({
-      success: function (res) {
+      success: function(res) {
         //初始化小程序蓝牙模块，生效周期为调用wx.openBluetoothAdapter至调用wx.closeBluetoothAdapter或小程序被销毁为止。 在小程序蓝牙适配器模块生效期间，开发者可以正常调用下面的小程序API，并会收到蓝牙模块相关的on回调。
         wx.openBluetoothAdapter({
           success(res) {
@@ -57,7 +58,6 @@ Page({
             })
 
             setTimeout(() => {
-              console.log("open")
               self.isOpen();
             }, 2000);
           }
@@ -65,12 +65,10 @@ Page({
       }
     });
   },
-  isOpen: function () { //本机蓝牙适配器状态
+  isOpen: function() { //本机蓝牙适配器状态
     let self = this;
     wx.getBluetoothAdapterState({
       complete(res) {
-        console.log("本机蓝牙适配器状态")
-        console.log(res);
         if (res.available) { //蓝牙适配器是否可用
           self.setData({
             pbt: false,
@@ -78,14 +76,12 @@ Page({
           })
           self.search();
         } else {
-          console.log("没有打开手机蓝牙")
           if (!res.available) { //没有打开手机蓝牙
             self.setData({
               pbt: true
             });
 
             setTimeout(() => {
-              console.log("open")
               self.isOpen();
             }, 2000);
           }
@@ -94,7 +90,7 @@ Page({
       }
     });
   },
-  search: function () { //搜索设备 给用户展示蓝牙列表
+  search: function() { //搜索设备 给用户展示蓝牙列表
     let self = this,
       dl = self.data.list;
     //开始搜寻附近的蓝牙外围设备。注意，该操作比较耗费系统资源，请在搜索并连接到设备后调用 stop 方法停止搜索。
@@ -104,7 +100,6 @@ Page({
       success(res) {
         setTimeout(() => {
           if (self.data.list.length == 0) {
-            console.log('找不到设备')
             wx.hideLoading()
             wx.showModal({
               title: '提示',
@@ -131,7 +126,6 @@ Page({
                 name: devices[i].name,
                 deviceId: devices[i].deviceId,
                 active: false
-                //,order: '244244AE010C7381ABD73604'
               };
               self.setData({
                 list: dl
@@ -147,11 +141,10 @@ Page({
       },
       fail(err) {
         wx.hideLoading();
-        console.log(err);
       }
     })
   },
-  connect: function () {
+  connect: function() {
     let self = this,
       list = self.data.list;
     app.loading('连接中')
@@ -167,9 +160,8 @@ Page({
     wx.createBLEConnection({ //连接低功耗蓝牙设备。
       deviceId: self.data.sL.deviceId,
       success(res) {
-        console.log('连接成功');
         wx.getSystemInfo({
-          success: function (res) {
+          success: function(res) {
             if (res.platform == "ios") {
               console.log("ios");
               wx.getBLEDeviceServices({ //获取蓝牙设备所有服务(service)。
@@ -179,8 +171,6 @@ Page({
                 },
                 fail(err) {
                   wx.hideLoading();
-                  console.log('service获取失败');
-                  console.log(err);
                   self.reconnection('蓝牙服务获取失败', '重新连接');
                 }
               });
@@ -224,7 +214,6 @@ Page({
     });
   },
   notify() { //启用订阅
-    console.log('启用订阅 notify');
     let self = this;
     wx.notifyBLECharacteristicValueChange({
       state: true,
@@ -236,11 +225,12 @@ Page({
         //初始化蓝牙信息
         agb.connect = true;
         agb.status = 1;
-        agb.treatTime = 10;
+        //agb.treatTime = 10;
         agb.no = self.data.sL.name.split("Tv231u-")[1];
         agb.deviceId = self.data.sL.deviceId;
         agb.clearAll = false;
         self.firstConnect() // 连接成功后告诉后台
+
         // wx.onBluetoothAdapterStateChange(function(res) {
         //   if (res.available == false) { //监听到手机蓝牙关闭，回到初始状态
         //     clearInterval(self.data.countdown);
@@ -267,7 +257,7 @@ Page({
         //   }
         // })
 
-        wx.onBLEConnectionStateChange(function (res) {
+        wx.onBLEConnectionStateChange(function(res) {
           // 该方法回调中可以用于处理连接意外断开等异常情况
           if (res.connected == false) {
             clearInterval(self.data.countdown);
@@ -281,10 +271,11 @@ Page({
             if (agb.reunionzT) {
               agb.treatTime = agb.reunionzT, agb.sT = 0, agb.eT = 0;
               agb.reunionzT = 0;
+              agb.connect = false;
               agb.clearAll = true;
               app.toast("设备蓝牙断开，即将跳转到结束页面！");
               setTimeout(() => {
-                wx.reLaunch({
+                wx.navigateTo({
                   url: '/pages/treatmentEnd/index'
                 })
               }, 2000)
@@ -293,8 +284,6 @@ Page({
               app.initialize();
             }
           }
-          // console.log("回调中可以用于处理连接意外断开等异常情况")
-          // console.log(res)
         })
 
         wx.onBLECharacteristicValueChange((res) => {
@@ -302,8 +291,51 @@ Page({
           console.log("接收指令：" + guest)
 
           switch (guest.substr(14, 2)) {
+            case "13":
+              clearInterval(app.globalData.bluetooth.workDown);
+              
+              if (agb.cureNo==null) {
+                agb.cureNo = parseInt(self.cutting(guest.substr(20, 8)), 16);
+                agb.boundary = guest.substr(16, 2);
+                console.log("当前累计第几次治疗：" + agb.cureNo);
+              }else{
+                let workStatus = guest.substr(18, 2);//工作状态
+                let boundary = guest.substr(16, 2);
+                agb.treatsj = parseInt(guest.substr(30, 2), 16);
+                if (boundary != agb.boundary || parseInt(self.cutting(guest.substr(20, 8)), 16) > agb.cureNo + 1){
+                  wx.showModal({
+                    title: '提示',
+                    content: '上次治疗非正常结束！请重新开始治疗！',
+                    showCancel: false,
+                    success(res) {
+                      if (res.confirm) {
+                        self.tiemEndRefresh();
+                      }
+                    }
+                  })
+                } else if (parseInt(self.cutting(guest.substr(20, 8)), 16) == agb.cureNo && guest.substr(18, 2) == '01'){
+                  console.log("guest.substr(18, 2) == '01'");
+                  wx.showModal({
+                    title: '提示',
+                    content: '上次治疗非正常结束！请重新开始治疗！',
+                    showCancel: false,
+                    success(res) {
+                      if (res.confirm) {
+                        self.tiemEndRefresh();
+                      }
+                    }
+                  })
+                }
+              }
+              //1.
+              break;
             case "09":
-              if (guest.substr(16, 2) == "01") { //开始
+              self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
+                crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
+              if (guest.substr(16, 2) == "01" && agb.sT==null) { //开始
+                self.send("244244AE" + self.convert16() + "0C7393AB" +
+                  crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7393AB') + "04"); //获取工作状态
+
                 if (getCurrentPages()[getCurrentPages().length - 1].route == "pages/treatmentEnd/index") {
 
                   if (self.data.tag == 1) {
@@ -322,8 +354,10 @@ Page({
                 agb.status = 3;
                 agb.startTime = app.tools.format(new Date(), 'Y.m.d H:i');
                 agb.setTime = parseInt(guest.substr(18, 2), 16);
-                console.log("agb.setTime:" + agb.setTime);
 
+                if (self.data.countdown) {
+                  clearInterval(self.data.countdown);
+                }
                 self.setData({
                   countdown: setInterval(() => {
                     agb.setTime = app.globalData.bluetooth.setTime - 1;
@@ -341,8 +375,8 @@ Page({
                   agb.reunionsT = (new Date()).getTime();
                 }
                 console.log("重连开始时间" + agb.reunionsT);
-                self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
-                  crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
+                // self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
+                //   crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
 
               } else if (guest.substr(16, 2) == "02") {
                 clearInterval(self.data.countdown);
@@ -355,15 +389,21 @@ Page({
                 }
                 console.log("暂停时 计算总时间为:" + agb.reunionzT + "重连开始时间" + agb.reunionsT);
 
-                self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
-                  crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
+                // self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
+                //   crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
               } else if (guest.substr(16, 2) == "03") {
                 clearInterval(self.data.countdown);
+                if (agb.status == 1) {
+                  //解决第一条命令没收到迅速收到三条应答命令 治疗时间负数
+                  return;
+                }
                 agb.status = 1;
-                self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
-                  crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
-                self.send("244244AE" + self.convert16() + "0C7386AB" +
-                  crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7386AB') + "04");
+                // self.send("244244AE" + guest.substr(8, 2) + "0C7389AB" +
+                //   crc.CRC.ToModbusCRC16('244244AE' + guest.substr(8, 2) + '0C7389AB') + "04");
+                setTimeout(() => {
+                  self.send("244244AE" + self.convert16() + "0C7386AB" +
+                    crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7386AB') + "04");
+                }, 300);
                 return;
 
               }
@@ -378,14 +418,28 @@ Page({
               } else {
                 agb.eT = parseInt(self.cutting(self.buf2hex(res.value).substr(-14, 8)), 16); //单位s
               }
+
               console.log("agb.sT:" + agb.sT);
-              console.log("agb.eT:" + agb.eT)
+              console.log("agb.eT:" + agb.eT);
+              console.log("agb.treatsj:" + agb.treatsj);
+
               if (agb.sT && agb.eT) {
                 clearInterval(self.data.countdown);
                 agb.treatTime = agb.eT - agb.sT;
+                agb.cureNo = null;
                 agb.sT = null, agb.eT = null, agb.reunionzT = 0, agb.reunionsT = 0;
 
                 console.log("治疗时间----------" + agb.treatTime)
+                if (agb.treatTime == 0) {
+                  wx.showModal({
+                    title: '提示',
+                    content: '治疗时间为0，无法保存！',
+                    showCancel: false,
+                    confirmText: '确定'
+                  })
+                  app.hideSus();
+                  return;
+                }
                 wx.navigateTo({
                   url: '/pages/treatmentEnd/index'
                 })
@@ -398,7 +452,7 @@ Page({
 
         self.judgeAuthen(); //查询是否是第一次认证，不是的话也可以使用
         setTimeout(() => {
-          console.log("获取版本号！！！")
+          console.log("获取版本号！！！" + agb.version)
           if (agb.version == "") {
             self.send("244244AE" + self.convert16() + "0C7385AB" +
               crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7385AB') + "04");
@@ -421,7 +475,6 @@ Page({
           crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7385AB') + "04");
       },
       fail() {
-        console.log('notify失败');
         wx.hideLoading();
         self.reconnection('蓝牙服务获取失败', '重新连接');
       },
@@ -457,19 +510,16 @@ Page({
         // })
       },
       fail(err) {
-        console.log(err);
         wx.hideLoading();
       }
     })
   },
   convert16() {
-    //parseInt("fe",16)
     let num = Number(app.globalData.bluetooth.packageNo).toString(16);
 
     if (num.length < 2) {
       num = "0" + num;
     }
-    console.log("convert16:" + num);
     return num;
   },
   buf2hex(buffer) {
@@ -492,7 +542,6 @@ Page({
     var rawStr = trimedStr.substr(0, 2).toLowerCase() === "0x" ? trimedStr.substr(2) : trimedStr;
     var len = rawStr.length;
     if (len % 2 !== 0) {
-      console.log("Illegal Format ASCII Code!");
       return "";
     }
     var curCharCode;
@@ -530,14 +579,6 @@ Page({
           })
         }, 2000)
       }
-      // else if (res.data.code == 0 && res.data.msg == "找不到相关设备") {
-      //   app.toast("找不到相关设备");
-      //   setTimeout(() => {
-      //     wx.redirectTo({
-      //       url: '/pages/index/index'
-      //     })
-      //   }, 1900);
-      // }
     })
   },
 
@@ -546,7 +587,7 @@ Page({
       api_name: 'connect',
       macno: agb.no || ''
     }, (res) => {
-      console.log(res)
+      
     })
   },
 
@@ -583,6 +624,16 @@ Page({
             }
           })
         }
+      }
+    })
+  },
+  tiemEndRefresh() {
+    app.initialize();
+    wx.closeBluetoothAdapter({
+      success: res => {
+        wx.navigateTo({
+          url: '/pages/connect/index'
+        })
       }
     })
   }

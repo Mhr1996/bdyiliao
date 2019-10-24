@@ -35,13 +35,15 @@ Page({
                 avatar: wx.getStorageSync('avatarUrl')
             },
             dlcurl: app.globalData.dlcurl,
-            bluetooth: app.globalData.bluetooth
+            bluetooth: app.globalData.bluetooth,
+            token: wx.getStorageSync('token')
         });
         timer = setInterval(() => {
             this.setData({
                 bluetooth: app.globalData.bluetooth
             });
         }, 100);
+        console.log("3")
         this.getIconList();
         this.getGlList();
         this.getADList();
@@ -49,10 +51,12 @@ Page({
 
     getIconList() {
         //功能列表查询
+      console.log("功能列表查询")
         app.mt.gd(app.wxRequest,
             '/wxsite/Common/api', {
                 api_name: 'function_app_list',
-                type: 1
+                type: 1,
+              pagesize:8,
             }, res => {
                 this.setData({
                     icon_list: res
@@ -62,6 +66,7 @@ Page({
     },
 
     getGlList() {
+      if (!wx.getStorageSync('token')){return;}
         app.mt.gd(app.wxRequest,
             '/wxsite/Photo/api', {
                 api_name: 'photoTherapy',
@@ -88,7 +93,7 @@ Page({
                 record_id: this.data.gl_id
             }, res => {
                 let gl_detail = res
-                gl_detail.basic.name = gl_detail.basic.name || '无'
+                gl_detail.name = gl_detail.basic ? gl_detail.basic.name : '未填写'
                 gl_detail.beam_time = gl_detail.beam_time || '无'
                 gl_detail.dose = gl_detail.dose || '无'
                 gl_detail.last_time = gl_detail.last_time || '未填写'

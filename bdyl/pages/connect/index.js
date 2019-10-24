@@ -16,7 +16,7 @@ Page({
   },
   onShow: function() {
     let self = this;
-    console.log(app.globalData.bluetooth)
+    //console.log(app.globalData.bluetooth)
     agb = app.globalData.bluetooth;
     wx.showLoading({
       title: '加载中',
@@ -60,7 +60,6 @@ Page({
             })
 
             setTimeout(() => {
-              console.log("open")
               self.isOpen();
             }, 2000);
           }
@@ -81,7 +80,6 @@ Page({
     let self = this;
     wx.getBluetoothAdapterState({
       complete(res) {
-        console.log(res);
         if (res.available) { //蓝牙适配器是否可用
           self.setData({
             pbt: false,
@@ -96,7 +94,6 @@ Page({
             });
 
             setTimeout(() => {
-              console.log("open")
               self.isOpen();
             }, 2000);
           }
@@ -121,7 +118,7 @@ Page({
               wx.hideLoading()
               wx.showModal({
                 title: '提示',
-                content: '找不到设备\n请检查蓝牙是否打开',
+                content: '未找到设备\n请检查手机蓝牙或设备是否打开',
                 showCancel: false,
                 confirmText: '确定'
               })
@@ -132,7 +129,9 @@ Page({
         wx.onBluetoothDeviceFound(res => { //监听寻找到新设备的事件
           let devices = res.devices,
             default_ = true;
+          
           for (let i in devices) {
+            //console.log(devices[i].name)
             if (dl.length > 0) {
               dl.forEach((v, k) => {
                 if (v.name == devices[i].name) {
@@ -141,7 +140,7 @@ Page({
                 }
               })
             }
-            if (devices[i].name != "" && devices[i].name.search("Tv231u") > -1 && default_) {
+            if (devices[i].name != "" && devices[i].name.search("HairPro-") > -1 && default_) {
               dl[dl.length] = {
                 name: devices[i].name,
                 deviceId: devices[i].deviceId,
@@ -162,7 +161,6 @@ Page({
       },
       fail(err) {
         wx.hideLoading();
-        console.log(err);
       }
     })
   },
@@ -207,7 +205,6 @@ Page({
                       },
                       fail(err) {
                         wx.hideLoading();
-                        console.log(err);
                       }
                     });
 
@@ -265,7 +262,6 @@ Page({
         agb.connect = true;
         agb.spT = 30;
         agb.phoneOff = false;
-        agb.no = self.data.sL.name.split("Tv231u-")[1];
         agb.deviceId = self.data.sL.deviceId;
         if (agb.cureNo != null) {
           agb.breakOff = true;
@@ -283,8 +279,12 @@ Page({
               clearInterval(self.data.bomb);
               // app.send("244244AE" + self.convert16() + "0F708E78000000" +
               //   crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0F708E78000000') + "04");
-              app.send("244244AE" + self.convert16() + "0C7387AB" +
-                crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7387AB') + "04");
+              app.send("244244AE" + self.convert16() + "0C7395AB" +
+                crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7395AB') + "04");
+                setTimeout(()=>{
+                  app.send("244244AE" + self.convert16() + "0C7387AB" +
+                    crc.CRC.ToModbusCRC16('244244AE' + self.convert16() + '0C7387AB') + "04");
+                },300)
             }
           }, 500)
         })
@@ -325,6 +325,7 @@ Page({
             console.log("设备蓝牙断开");
             //直接结束本次治疗
             if (agb.connect == true && agb.status > 1) {
+              agb.connect=false;
               if (Number(agb.totalTime - agb.spT) > 0) {
                 agb.treatTime = agb.totalTime - agb.spT;
                 agb.endTime = app.tools.format(new Date(), 'Y.m.d H:i');
@@ -361,7 +362,14 @@ Page({
           //86 获取累计工作时间
           //82 获取软件版本号
           //13 单次治疗剩余时间上报
-          if (/04$/.test(guest) && agb.splicingNo == '') {
+          if (guest.substr(14, 2) == "15" || guest.length == 8) {
+            agb.no += guest;
+            if (agb.no.substr(14, 2) == "15" && /04$/.test(agb.no)) {
+              agb.no=self.hexCharCodeToStr(agb.no.substr(16, 26));
+              agb.noName = agb.no.replace(/(\d{4})$/, agb.no.substr(-4, 4).replace(/0/g, "A").replace(/1/g, "B"));
+              self.judgeAuthen(); //查询是否是第一次认证，不是的话也可以使用
+            }
+          } else if (guest.substr(14, 2) != "02" && guest.length > 14) {
             switch (guest.substr(14, 2)) {
               case "09":
                 if (guest.substr(16, 2) == "01") { //开始
@@ -433,6 +441,7 @@ Page({
                 } else if (agb.sT != parseInt(self.cutting(self.buf2hex(res.value).substr(-14, 8)), 16)) {
                   agb.eT = parseInt(self.cutting(self.buf2hex(res.value).substr(-14, 8)), 16); //单位s
                 }
+                console.log('%c' + 'agb.sT----:'+agb.sT, 'color:red;');
                 if (agb.sT && agb.eT) {
                   agb.treatTime = Math.floor((agb.eT - agb.sT) / 60);
                   agb.sT = null, agb.eT = null;
@@ -444,11 +453,10 @@ Page({
                 break;
               case "13":
                 //单次治疗剩余时间上报
-                agb.spT = Math.floor(parseInt(self.cutting(guest.substr(-22, 8)), 16) / 60);
+                agb.spT = Math.ceil(parseInt(self.cutting(guest.substr(-22, 8)), 16) / 60);
                 if (agb.totalTime == "") {
                   agb.totalTime = Math.floor(parseInt(self.cutting(guest.substr(-22, 8)), 16) / 60);
                 }
-                console.log(agb.spT, agb.totalTime)
                 if (agb.cureNo == null) {
                   agb.cureNo = parseInt(self.cutting(guest.substr(-14, 8)), 16);
                 } else if (parseInt(self.cutting(guest.substr(-14, 8)), 16) > agb.cureNo + 1 && agb.breakOff) {
@@ -462,6 +470,7 @@ Page({
                       }
                     }
                   })
+                  return;
                 }
 
                 console.log("第" + agb.cureNo + "次治疗 剩余时间" + agb.spT + "min");
@@ -471,6 +480,22 @@ Page({
               case "07":
                 //设备工作状态
                 if (!agb.endStatus) {
+                  console.log("agb.startTime:" + agb.startTime + ",guest.substr(-24, 2):" + guest.substr(-24, 2));
+                  clearInterval(app.globalData.bluetooth.workDown);
+                  if (agb.startTime == '' && guest.substr(-24, 2) != "00") {//1号用户断开手机蓝牙，2号用户去连接生发帽继续治疗问题
+                    wx.showModal({
+                      title: '提示',
+                      content: '他人正在使用，请勿连接此设备！',
+                      showCancel: false,
+                      success(res) {
+                        if (res.confirm) {
+                          app.initialize(true);
+                          self.tiemEndRefresh();
+                        }
+                      }
+                    })
+                    return;
+                  }
                   clearInterval(app.globalData.bluetooth.workDown);
                   if (parseInt(self.cutting(guest.substr(-22, 8)), 16) > agb.cureNo + 1 && agb.cureNo != "null" && agb.breakOff) {
                     wx.showModal({
@@ -483,10 +508,11 @@ Page({
                         }
                       }
                     })
+                    return;
                   } else {
                     if (guest.substr(-24, 2) == "00") { //空闲
                       agb.status = 1;
-                      agb.spT = Math.floor(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
+                      agb.spT = Math.ceil(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
                       if (parseInt(self.cutting(guest.substr(-22, 8)), 16) == agb.cureNo + 1 && agb.cureNo != "null" && agb.breakOff) {
                         wx.showModal({
                           title: '提示',
@@ -499,19 +525,20 @@ Page({
                             }
                           }
                         })
+                        return;
                       }
                     } else if (guest.substr(-24, 2) == "01") { //治疗
                       agb.status = 2;
-                      agb.spT = Math.floor(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
+                      agb.spT = Math.ceil(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
                     } else if (guest.substr(-24, 2) == "02") { //暂停
                       agb.status = 3;
-                      agb.spT = Math.floor(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
+                      agb.spT = Math.ceil(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60);
                     }
                   }
-
+                  console.log("====="+self.cutting(guest.substr(-14, 8)));
                   console.log("*******状态:" + guest.substr(-24, 2))
                   console.log("**第几次治疗:" + parseInt(self.cutting(guest.substr(-22, 8)), 16))
-                  console.log("**剩余时间:" + Math.floor(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60) + "min")
+                  console.log("**剩余时间:" + Math.ceil(parseInt(self.cutting(guest.substr(-14, 8)), 16) / 60) + "min")
                 }
                 break;
               default:
@@ -526,7 +553,7 @@ Page({
           }
         });
 
-        self.judgeAuthen(); //查询是否是第一次认证，不是的话也可以使用
+        
       },
       fail() {
         console.log('notify失败');

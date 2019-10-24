@@ -205,9 +205,10 @@ Page({
       // 来自页面内转发按钮
       this.setData({
         show_mask: false,
+        to_share: false,
         page: 1
       })
-      console.log(res.target)
+      this.onShow()
     }
     return {
       title: this.data.share_info.share_title,

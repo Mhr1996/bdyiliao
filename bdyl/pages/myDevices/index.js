@@ -16,7 +16,9 @@ Page({
     agb:null ,
     bagNum: 0, //发送升级总次数
     degree: 0,  //进度条
-    btnOn: false
+    btnOn: false,
+    apino: '', //未连接时查询到的设备序列号
+    edition: '' //未连接时查询到的设备版本号
   },
 
   onLoad: function (e) {
@@ -38,27 +40,38 @@ Page({
       agb: agb
     })
     
-    if (self.data.agb.connect == true && self.data.agb.no) {
-      app.mt.gd(app.wxRequest,
-        '/wxsite/Shair/api', {
-          api_name: 'device_list',
-          macno: agb.no
-        }, (res) => {
+    app.mt.gd(app.wxRequest,
+      '/wxsite/Shair/api', {
+        api_name: 'device_list',
+        macno: agb.no 
+      }, (res) => {
+        if (app.globalData.bluetooth.connect == true) {
           self.setData({
-            type_name: res.device_type.type_name,
-            ftime: app.tools.format(res.ftime * 1000, '年月')
+            type_name: res[0].device_type.type_name,
+            ftime: app.tools.format(res[0].ftime * 1000, '年月')
           })
-          console.log("版本检测")
-          console.log(res.edition)
-          console.log(agb.no)
-          if (res.edition != agb.version && agb.no != "" && agb.no){
+          if (res[0].edition != agb.version && agb.no != "" && agb.no) {
+            console.log(Number(res[0].edition.substr(-8).replace(/\./g, "")))
+            console.log(Number(agb.version.substr(-8).replace(/\./g, "")))
+            if (Number(res[0].edition.substr(-8).replace(/\./g, "")) > Number(agb.version.substr(-8).replace(/\./g, ""))) {
               self.setData({
                 btnOn: true
               })
+            }
           }
-        }, app.tools.error_tip
-      );
-    }
+        } else {
+          console.log(res[0].macno)
+          self.setData({
+            apino: res[0].macno.replace(/(\d{4})$/, res[0].macno.substr(-4, 4).replace(/0/g, "A").replace(/1/g, "B")),
+            type_name: res[0].device_type.type_name,
+            ftime: app.tools.format(res[0].ftime * 1000, '年月'),
+            edition: res[0].edition,
+            btnOn: false
+          })
+        }
+        
+      }, app.tools.error_tip
+    );
   },
 
   listeningEvent(e) {
@@ -189,9 +202,11 @@ Page({
   },
 
   goAttestation(e) {
-    wx.redirectTo({
-      url: '/pages/attestation/index'
-    })
+    if (app.globalData.bluetooth.connect == true) {
+      wx.redirectTo({
+        url: '/pages/attestation/index'
+      })
+    }
   },
 
   send(scs) { //发送数据并读取返回数据 data为需要发送的数据指令（16位16进制组成的字符串）

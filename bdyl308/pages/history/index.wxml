@@ -8,7 +8,9 @@
                     <view class="cm pl15 relative after mb10 cm">{{item.ctime}}</view>
                 </view>
                 <view class='flex-csb w100 mb10'>
-                    <view>照射部位：{{item.basic.name || '无'}}</view>
+                    <view>照射部位：<text
+                            style="{{!item.basic?'color:#ff6565':''}}">{{item.basic ? item.basic.name : '未填写'}}</text>
+                    </view>
                 </view>
                 <view class='flex-csb w100 mb10'>
                     <view>照射时间：{{item.beam_time || '无'}}</view>

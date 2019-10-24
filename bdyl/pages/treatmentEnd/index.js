@@ -13,18 +13,14 @@ Page({
     no_upload: 1,
     selected_day_list: [],
     selected_day_list2: [],
-    selected_day_list3: []
+    selected_day_list3: [],
+    treatment_id: ""
   },
 
   onLoad(e) {
     this.setData({
-      total_lispic_str: e.total_lispic || '',
-      total_lispic: e.total_lispic ? e.total_lispic.split(',') : [],
-      dlcurl: app.globalData.dlcurl,
-      datas: e.datas || ''
+      dlcurl: app.globalData.dlcurl
     });
-    console.log("pic1" + this.data.dlcurl + '/public' + this.data.total_lispic[0]);
-    console.log("pic3" + this.data.dlcurl + '/public' + this.data.total_lispic[2]);
   },
 
   onShow() {
@@ -36,6 +32,9 @@ Page({
     this.initCal()
     this.showCalendar()
     this.canUpload()
+    if (app.globalData.bluetooth.treatment_id==''){
+      this.submit()
+    }
   },
 
   onUnload() {
@@ -123,6 +122,7 @@ Page({
   },
 
   toUpload() {
+    console.log("点击")
     if (this.data.no_upload === 1) {
       app.toast('建议每30天上传一次图片')
       return false
@@ -133,22 +133,58 @@ Page({
   },
 
   submit() {
+    let self = this;
     app.mt.gd(app.wxRequest, '/wxsite/Shair/api', {
       api_name: 'submit_any_Image',
+      top_img: '',
+      hairline_img: '',
+      after_img: '',
+      local_img: '',
+      start_time: this.data.bluetooth.startTime,
+      end_time: this.data.bluetooth.endTime,
+      long_time: this.data.bluetooth.treatTime,
+      macno: this.data.bluetooth.no
+    }, (res) => {
+
+      //成功后重置蓝牙信息
+      console.log(res)
+      console.log('%c' + res.treatment_id, 'color:red;');
+      self.data.bluetooth.treatment_id = res.treatment_id;
+      // app.globalData.bluetooth.spT = '';
+      // app.globalData.bluetooth.endTime = '';
+      // app.globalData.bluetooth.treatTime = '';
+      // app.initialize(true);
+
+      // wx.showToast({
+      //   title: '保存成功',
+      //   icon: 'success',
+      //   duration: 1800,
+      //   mask: true
+      // })
+      
+      // setTimeout(() => {
+      //   wx.reLaunch({
+      //     url: '/pages/index/index'
+      //   })
+      // }, 1800)
+    }, app.tools.error_tip);
+  },
+  submit2(){
+    let self = this;
+    app.mt.gd(app.wxRequest, '/wxsite/Shair/api', {
+      api_name: 'submit',
+      treatment_id: self.data.bluetooth.treatment_id,
       top_img: this.data.total_lispic[0] || '',
       hairline_img: this.data.total_lispic[1] || '',
       after_img: this.data.total_lispic[2] || '',
       local_img: this.data.total_lispic[3] || '',
-      start_time: this.data.bluetooth.startTime,
-      end_time: this.data.bluetooth.endTime,
-      long_time: this.data.bluetooth.treatTime,
-      datas: this.data.datas,
-      macno: this.data.bluetooth.no
+      datas: this.data.datas || '' 
     }, (res) => {
       //成功后重置蓝牙信息
       app.globalData.bluetooth.spT = '';
       app.globalData.bluetooth.endTime = '';
       app.globalData.bluetooth.treatTime = '';
+      app.initialize(true);
 
       wx.showToast({
         title: '保存成功',
@@ -156,7 +192,7 @@ Page({
         duration: 1800,
         mask: true
       })
-      app.initialize(true);
+
       setTimeout(() => {
         wx.reLaunch({
           url: '/pages/index/index'
@@ -164,7 +200,6 @@ Page({
       }, 1800)
     }, app.tools.error_tip);
   },
-
   listeningEvent(e) {
     this.onShow();
   }

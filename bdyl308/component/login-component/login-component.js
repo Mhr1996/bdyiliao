@@ -84,6 +84,20 @@ Component({
             } else { //用户取消授权
                 wx.hideLoading();
             }
-        }
+      },
+      cancelGetInfo: function () {
+        let vis = this;
+        wx.reLaunch({
+          url: '/pages/index/index',
+          success: function () {
+            setTimeout(() => {
+              vis.setData({
+                is_show: false
+              })
+            }, 500);
+          }
+        })
+
+      }
     }
 })
